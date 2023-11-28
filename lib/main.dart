@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mk_aromatic_limited/landing_page/screens/landing_screen.dart';
 import 'package:mk_aromatic_limited/landing_page/services/bottom_nav_service.dart';
+import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen1.dart';
 import 'package:mk_aromatic_limited/screen/signin/signin.dart';
+import 'package:mk_aromatic_limited/screen/signup/signup.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: SignIn(),
+        home: ChooseScreenOne(),
       ),
     );
   }

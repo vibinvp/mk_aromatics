@@ -10,6 +10,7 @@ class GlobalVariabels {
   static const horizontal10 = SizedBox(
     width: 10,
   );
+  static const appColor = Color.fromARGB(255, 255, 95, 39) ;
   static List<BoxShadow> shadow = [
     BoxShadow(
       color: Colors.grey.shade200,
@@ -19,3 +20,4 @@ class GlobalVariabels {
     ),
   ];
 }
+
