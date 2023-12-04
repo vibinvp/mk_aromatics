@@ -36,6 +36,11 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   provider: ^6.1.1
+  lottie: ^2.7.0
+  multi_select_flutter: ^4.0.0
+  flutter_secure_storage: ^5.0.3
+  dio: ^5.4.0
+  fluttertoast: ^8.2.4
 
 dev_dependencies:
   flutter_test:
@@ -64,6 +69,7 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/icons/categories/
+    - assets/animations/
 
 
   # An image asset can refer to one or more resolution-specific "variants", see

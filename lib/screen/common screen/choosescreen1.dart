@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen2.dart';
+import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen3.dart';
 
 class ChooseScreenOne extends StatefulWidget {
   const ChooseScreenOne({super.key});
@@ -11,6 +13,7 @@ class ChooseScreenOne extends StatefulWidget {
 class _SignInState extends State<ChooseScreenOne> {
   TextEditingController emailController = TextEditingController();
   int selectedButtonIndex = -1; // Maintain the selected button index
+  final demi = ["Urban Local Bodies", "Others"];
 
   @override
   Widget build(BuildContext context) {
@@ -30,25 +33,25 @@ class _SignInState extends State<ChooseScreenOne> {
             decoration: const BoxDecoration(
               color: Color.fromARGB(255, 255, 95, 39),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(25),
-                bottomRight: Radius.circular(25),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
             ),
-            child: Center(
-              child: SizedBox(
-                height: 100,
-                child: Image.network(
-                  "https://play-lh.googleusercontent.com/cECdMzFtaKawPdL7h_YoFbfH3XXiCJPTHlnwb8foVgnYvE6V9lWBfvejETzuHDDW2E0",
-                ),
-              ),
-            ),
+            child: const Center(
+                child: Text(
+              "Choose",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 25,
+                  fontWeight: FontWeight.w800),
+            )),
           ),
           Positioned(
             left: 40,
             right: 40,
-            top: 230,
+            top: ScreemHight * 0.34,
             child: Container(
-              height: ScreemHight * 0.3,
+              height: ScreemHight * 0.28,
               width: ScreenWidth * 0.3,
               decoration: BoxDecoration(
                 boxShadow: const [
@@ -62,39 +65,31 @@ class _SignInState extends State<ChooseScreenOne> {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 10),
-                child: MyButtonGroup(
-                  selectedButtonIndex: selectedButtonIndex,
-                  onButtonPressed: (index) {
-                    setState(() {
-                      selectedButtonIndex = index;
-                    });
-                  },
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: MyButtonGroup(
+                    selectedButtonIndex: selectedButtonIndex,
+                    onButtonPressed: (index) {
+                      setState(() {
+                        selectedButtonIndex = index;
+                        if (selectedButtonIndex == 0) {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return const ChooseScreen2();
+                          }));
+                        } else {
+                          Navigator.of(context)
+                              .push(MaterialPageRoute(builder: (context) {
+                            return const ChooseScreen3();
+                          }));
+                        }
+                      });
+                    },
+                    demi: demi,
+                    title: " ",
+                  ),
                 ),
-              ),
-            ),
-          ),
-          Positioned(
-            bottom: 100,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              height: 100,
-              child: Image.network(
-                "https://play-lh.googleusercontent.com/cECdMzFtaKawPdL7h_YoFbfH3XXiCJPTHlnwb8foVgnYvE6V9lWBfvejETzuHDDW2E0",
-              ),
-            ),
-          ),
-          const Positioned(
-            bottom: 80,
-            left: 50,
-            right: 0,
-            child: Text(
-              "Together, towards a plastic litter free Goa",
-              style: TextStyle(
-                color: GlobalVariabels.appColor,
-                fontSize: 15,
-                fontWeight: FontWeight.w800,
               ),
             ),
           ),
@@ -120,13 +115,20 @@ class _SignInState extends State<ChooseScreenOne> {
 class MyButtonGroup extends StatelessWidget {
   final int selectedButtonIndex;
   final Function(int) onButtonPressed;
+  final List<String> demi;
 
-  MyButtonGroup({required this.selectedButtonIndex, required this.onButtonPressed});
+  const MyButtonGroup({
+    Key? key,
+    required this.selectedButtonIndex,
+    required this.onButtonPressed,
+    required this.demi,
+    required String title,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: 2,
+      itemCount: demi.length,
       itemBuilder: (BuildContext context, index) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -134,6 +136,7 @@ class MyButtonGroup extends StatelessWidget {
             index: index,
             selectedIndex: selectedButtonIndex,
             onPressed: onButtonPressed,
+            title: demi[index],
           ),
         );
       },
@@ -142,31 +145,54 @@ class MyButtonGroup extends StatelessWidget {
 }
 
 class MyButton extends StatelessWidget {
+  final String title;
   final int index;
   final int selectedIndex;
   final Function(int) onPressed;
 
-  MyButton({required this.index, required this.selectedIndex, required this.onPressed});
+  MyButton({
+    required this.index,
+    required this.selectedIndex,
+    required this.onPressed,
+    required this.title,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all(
-          index == selectedIndex ? GlobalVariabels.appColor : Colors.white,
-        ),
-        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-          RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(0.0),
+    final ScreemHight = MediaQuery.of(context).size.height;
+    final ScreenWidth = MediaQuery.of(context).size.width;
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 15),
+      child: GestureDetector(
+        onTap: () {
+          onPressed(index);
+        },
+        child: Container(
+          width: ScreenWidth * 0.7,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(2, 2),
+                blurRadius: 12,
+                color: Color.fromRGBO(0, 0, 0, 0.16),
+              )
+            ],
+            color: index == selectedIndex
+                ? GlobalVariabels.appColor
+                : Colors.white,
+          ),
+          padding: EdgeInsets.all(10),
+          child: Center(
+            child: Text(
+              title,
+              style: TextStyle(
+                color: Colors.black,
+              ),
+            ),
           ),
         ),
       ),
-      onPressed: () {
-        onPressed(index);
-      },
-      child: Text("Punchayat", style: TextStyle(
-        color: Colors.black,
-      ),),
     );
   }
 }

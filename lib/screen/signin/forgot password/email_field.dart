@@ -1,20 +1,10 @@
 import 'package:flutter/material.dart';
-
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
-import 'package:mk_aromatic_limited/screen/signin/signin.dart';
+import 'package:mk_aromatic_limited/screen/signin/forgot%20password/verification.dart';
 
-class SignUp extends StatefulWidget {
-  const SignUp({super.key});
+class EmailField extends StatelessWidget {
+  const EmailField({super.key});
 
-  @override
-  State<SignUp> createState() => _SignUPState();
-}
-
-bool _passwordVisible = false;
-
-class _SignUPState extends State<SignUp> {
-  TextEditingController emailController = TextEditingController();
-  bool _passwordVisible = false;
   @override
   Widget build(BuildContext context) {
     final ScreemHight = MediaQuery.of(context).size.height;
@@ -42,7 +32,7 @@ class _SignUPState extends State<SignUp> {
                 ),
                 child: const Center(
                     child: Text(
-                  "Sign Up",
+                  "Forgot Password ",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 28,
@@ -71,7 +61,7 @@ class _SignUPState extends State<SignUp> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Container(
-                    height: ScreemHight * 0.44,
+                    // height: ScreemHight * 0.44,
                     width: ScreenWidth * 0.3,
                     decoration: BoxDecoration(
                         boxShadow: const [
@@ -93,42 +83,6 @@ class _SignUPState extends State<SignUp> {
                           TextField(
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                          Colors.grey), // Change the color here
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
-                                ),
-                                hintText: 'User Name',
-                                hintStyle:
-                                    TextStyle(color: Colors.grey.shade400),
-                                prefixIcon: Icon(
-                                  Icons.person,
-                                  color: Colors.grey.shade400,
-                                )),
-                          ),
-                          TextField(
-                            decoration: InputDecoration(
-                                focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(color: Colors.grey),
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
-                                ),
-                                hintText: 'Mobile Number',
-                                hintStyle:
-                                    TextStyle(color: Colors.grey.shade400),
-                                prefixIcon: Icon(
-                                  Icons.phone,
-                                  color: Colors.grey.shade400,
-                                )),
-                          ),
-                          TextField(
-                            decoration: InputDecoration(
-                                focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
                                 ),
                                 enabledBorder: UnderlineInputBorder(
@@ -140,59 +94,6 @@ class _SignUPState extends State<SignUp> {
                                     TextStyle(color: Colors.grey.shade400),
                                 prefixIcon: Icon(
                                   Icons.mail_outline,
-                                  color: Colors.grey.shade400,
-                                )),
-                          ),
-                          TextField(
-                            obscureText: !_passwordVisible,
-                            decoration: InputDecoration(
-                                focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                          Colors.grey), // Change the color here
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
-                                ),
-                                hintText: 'Password',
-                                hintStyle:
-                                    TextStyle(color: Colors.grey.shade400),
-                                suffixIcon: IconButton(
-                                  icon: Icon(
-                                    // Based on passwordVisible state choose the icon
-                                    _passwordVisible
-                                        ? Icons.visibility
-                                        : Icons.visibility_off,
-                                    color: Colors.grey.shade400,
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      _passwordVisible = !_passwordVisible;
-                                    });
-                                  },
-                                ),
-                                prefixIcon: Icon(
-                                  Icons.lock_outlined,
-                                  color: Colors.grey.shade400,
-                                )),
-                          ),
-                          TextField(
-                            decoration: InputDecoration(
-                                focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                          Colors.grey), // Change the color here
-                                ),
-                                enabledBorder: UnderlineInputBorder(
-                                  borderSide:
-                                      BorderSide(color: Colors.grey.shade300),
-                                ),
-                                hintText: 'Confirm Password',
-                                hintStyle:
-                                    TextStyle(color: Colors.grey.shade400),
-                                prefixIcon: Icon(
-                                  Icons.lock_outline,
                                   color: Colors.grey.shade400,
                                 )),
                           ),
@@ -209,14 +110,16 @@ class _SignUPState extends State<SignUp> {
                                 onPressed: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return SignIn();
+                                    return VerificationField();
                                   }));
                                 },
                                 child: const Text(
-                                  "Sign Up",
+                                  "Continue",
                                   style: TextStyle(color: Colors.white),
                                 )),
                           ),
+                          GlobalVariabels.vertical15,
+                          GlobalVariabels.vertical10,
                         ],
                       ),
                     ),

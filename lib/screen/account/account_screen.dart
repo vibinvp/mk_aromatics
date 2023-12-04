@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:mk_aromatic_limited/constants/global_variables.dart';
+
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
 
@@ -10,10 +12,141 @@ class AccountScreen extends StatefulWidget {
 class _AccountScreenState extends State<AccountScreen> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-        child: Text("Account"),
-      ),
-    );
+    return Scaffold(
+        appBar: AppBar(
+          title: const Text("Profile"),
+          automaticallyImplyLeading: false,
+          centerTitle: true,
+          backgroundColor: Colors.white,
+        ),
+        body: Container(
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/MK-Aromatic-BG.jpg"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Center(
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 70,
+                ),
+                Container(
+                  //  height: 250,
+                  width: 300,
+                  decoration: BoxDecoration(
+                      // boxShadow: const [
+                      //   BoxShadow(
+                      //     color: Colors.grey,
+                      //     blurRadius: 3.0,
+                      //     offset: Offset(2, 2),
+                      //   ),
+                      // ],
+                      borderRadius: BorderRadius.circular(15),
+                      color: Colors.white),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GlobalVariabels.vertical10,
+                        GlobalVariabels.vertical10,
+                        const Text(
+                          "Edit Your Profile",
+                          style: TextStyle(fontWeight: FontWeight.w400),
+                        ),
+                        GlobalVariabels.vertical10,
+                        GlobalVariabels.vertical15,
+                        const Center(
+                          child: CircleAvatar(
+                            backgroundColor: GlobalVariabels.appColor,
+                            minRadius: 25,
+                            maxRadius: 25,
+                            child: Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                        GlobalVariabels.vertical15,
+                        GlobalVariabels.vertical10,
+                        GlobalVariabels.vertical15,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 60),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Jhon Deo",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                  height: 25,
+                                  child:
+                                      Image.asset("assets/images/IMG_3346.jpg"))
+                            ],
+                          ),
+                        ),
+                        GlobalVariabels.vertical15,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 60),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Mobile",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                  height: 25,
+                                  child:
+                                      Image.asset("assets/images/IMG_3346.jpg"))
+                            ],
+                          ),
+                        ),
+                        GlobalVariabels.vertical15,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 60),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "e-Mail",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              SizedBox(
+                                  height: 25,
+                                  child:
+                                      Image.asset("assets/images/IMG_3346.jpg"))
+                            ],
+                          ),
+                        ),
+                        GlobalVariabels.vertical10,
+                        GlobalVariabels.vertical15,
+                        GlobalVariabels.vertical10,
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electron",
+                            style: TextStyle(
+                                fontSize: 9, fontWeight: FontWeight.w300),
+                          ),
+                        ),
+                        GlobalVariabels.vertical10,
+                        GlobalVariabels.vertical15,
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
   }
 }
