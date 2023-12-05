@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/authentication/registration.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen6.dart';
+import 'package:provider/provider.dart';
 
 class ChooseScreen5 extends StatefulWidget {
   const ChooseScreen5({super.key});
@@ -10,6 +12,20 @@ class ChooseScreen5 extends StatefulWidget {
 }
 
 class _ChooseScreen5 extends State<ChooseScreen5> {
+  late RegistrationProvider registrationProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    registrationProvider =
+        Provider.of<RegistrationProvider>(context, listen: false);
+    registrationProvider.getCurrentLocation();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      registrationProvider.getSubcategoryList(context);
+    });
+  }
+
   TextEditingController emailController = TextEditingController();
   int selectedButtonIndex = -1; // Maintain the selected button index
 
@@ -74,13 +90,13 @@ class _ChooseScreen5 extends State<ChooseScreen5> {
                           color: Colors.white,
                         ),
                       ),
-                      const Text(
-                        "Jhon Deo",
+                      Text(
+                        registrationProvider.usernameController.text,
                         style: TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      const Text(
-                        "Vasco-Mormugao",
+                      Text(
+                        registrationProvider.emailController.text,
                         style: TextStyle(
                           fontSize: 12,
                         ),
@@ -93,25 +109,30 @@ class _ChooseScreen5 extends State<ChooseScreen5> {
                         ),
                       ),
                       GlobalVariabels.vertical15,
-                      SizedBox(
-                        width: ScreenWidth * 0.3,
-                        child: ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                              const Color.fromARGB(255, 255, 95, 39),
-                            )),
-                            onPressed: () {
-                              Navigator.of(context)
-                                  .push(MaterialPageRoute(builder: (context) {
-                                return ChooseScreen6();
-                              }));
-                            },
-                            child: const Text(
-                              "Submit",
-                              style: TextStyle(color: Colors.white),
-                            )),
-                      ),
+                      Consumer<RegistrationProvider>(
+                          builder: (context, value, _) {
+                        return value.isLoading
+                            ? const Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : SizedBox(
+                                width: ScreenWidth * 0.3,
+                                child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                      const Color.fromARGB(255, 255, 95, 39),
+                                    )),
+                                    onPressed: () {
+                                      value.registration(
+                                          value.selectedSubCatId, context);
+                                    },
+                                    child: const Text(
+                                      "Submit",
+                                      style: TextStyle(color: Colors.white),
+                                    )),
+                              );
+                      }),
                     ],
                   )),
             ),

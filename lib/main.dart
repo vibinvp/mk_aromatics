@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/controller/authentication/registration.dart';
+import 'package:mk_aromatic_limited/controller/login/login.dart';
 import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
 
 import 'package:mk_aromatic_limited/screen/landing_page/services/bottom_nav_service.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen1.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen6.dart';
 import 'package:mk_aromatic_limited/screen/signin/signin.dart';
+import 'package:mk_aromatic_limited/screen/signup/signup.dart';
 import 'package:mk_aromatic_limited/screen/splashscreen/splashscreen.dart';
 
 import 'package:provider/provider.dart';
@@ -23,6 +26,12 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (_) => BottomNavigationModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => LoginProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => RegistrationProvider(),
         ),
       ],
       child: MaterialApp(

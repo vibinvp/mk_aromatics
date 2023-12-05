@@ -1,7 +1,9 @@
 // import 'dart:io';
 
-
-// class ApiHeader {
+class ApiHeader {
+  static Map<String, String> header = {
+    'X-API-KEY': 'XiH9yEKiUG1t533VyeBddDB0630MIoMh39QWtVpy'
+  };
 //   static Future<Map<String, String>> getHeaders() async {
 //     final token = await getToken();
 
@@ -29,4 +31,4 @@
 
 //     return patfomm;
 //   }
-// }
+}

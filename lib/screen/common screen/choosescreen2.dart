@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/authentication/registration.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen3.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen4.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen5.dart';
+import 'package:provider/provider.dart';
 
 class ChooseScreen2 extends StatefulWidget {
-  const ChooseScreen2({super.key});
-
+  const ChooseScreen2({super.key, required this.name});
+  final String name;
   @override
   State<ChooseScreen2> createState() => _ChooseScreen2();
 }
@@ -14,6 +16,20 @@ class ChooseScreen2 extends StatefulWidget {
 class _ChooseScreen2 extends State<ChooseScreen2> {
   TextEditingController emailController = TextEditingController();
   int selectedButtonIndex = -1; // Maintain the selected button index
+
+  late RegistrationProvider registrationProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    registrationProvider =
+        Provider.of<RegistrationProvider>(context, listen: false);
+    registrationProvider.getCurrentLocation();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      registrationProvider.getSubcategoryList(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,14 +49,14 @@ class _ChooseScreen2 extends State<ChooseScreen2> {
             decoration: const BoxDecoration(
               color: Color.fromARGB(255, 255, 95, 39),
               borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(25),
-                bottomRight: Radius.circular(25),
+                bottomLeft: Radius.circular(30),
+                bottomRight: Radius.circular(30),
               ),
             ),
-            child: const Center(
+            child: Center(
                 child: Text(
-              "Urben Local  Bodies",
-              style: TextStyle(
+              widget.name,
+              style: const TextStyle(
                   color: Colors.white,
                   fontSize: 25,
                   fontWeight: FontWeight.w800),
@@ -51,7 +67,7 @@ class _ChooseScreen2 extends State<ChooseScreen2> {
             right: 40,
             top: ScreemHight * 0.34,
             child: Container(
-              height: ScreemHight * 0.3,
+              //  height: MediaQuery.of(context).size.height / 2,
               width: ScreenWidth * 0.3,
               decoration: BoxDecoration(
                 boxShadow: const [
@@ -64,21 +80,11 @@ class _ChooseScreen2 extends State<ChooseScreen2> {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
-                child: MyButtonGroup(
-                  selectedButtonIndex: selectedButtonIndex,
-                  onButtonPressed: (index) {
-                    setState(() {
-                      selectedButtonIndex = index;
-
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return const ChooseScreen4();
-                      }));
-                    });
-                  },
+              child: const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 20),
+                  child: MyButtonGroup(),
                 ),
               ),
             ),
@@ -103,28 +109,40 @@ class _ChooseScreen2 extends State<ChooseScreen2> {
 }
 
 class MyButtonGroup extends StatelessWidget {
-  final int selectedButtonIndex;
-  final Function(int) onButtonPressed;
+  const MyButtonGroup({Key? key}) : super(key: key);
 
-  MyButtonGroup(
-      {super.key,
-      required this.selectedButtonIndex,
-      required this.onButtonPressed});
-  final demi = ["Panchayat", "Municipality", "Corporation"];
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: 3,
-      itemBuilder: (BuildContext context, index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: MyButton(
-            index: index,
-            selectedIndex: selectedButtonIndex,
-            onPressed: onButtonPressed,
-            title: demi[index],
-          ),
-        );
+    return Consumer<RegistrationProvider>(
+      builder: (context, value, _) {
+        return value.isLoadSubCategory
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                itemCount: value.subcategoryList.length,
+                itemBuilder: (BuildContext context, index) {
+                  final cat = value.subcategoryList[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: MyButton(
+                      index: index,
+                      onPressed: () async {
+                        value.selectedSubCategory(cat.id.toString());
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ChooseScreen4(
+                              title: cat.subCatName ?? "",
+                            ),
+                          ),
+                        );
+                      },
+                      title: cat.subCatName ?? '',
+                    ),
+                  );
+                },
+              );
       },
     );
   }
@@ -133,23 +151,16 @@ class MyButtonGroup extends StatelessWidget {
 class MyButton extends StatelessWidget {
   final String title;
   final int index;
-  final int selectedIndex;
-  final Function(int) onPressed;
+  final void Function()? onPressed;
 
-  MyButton(
-      {required this.index,
-      required this.selectedIndex,
-      required this.onPressed,
-      required this.title});
+  MyButton({required this.index, required this.onPressed, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.all(
-          index == selectedIndex
-              ? GlobalVariabels.appColor
-              : Colors.grey.shade300,
+          Colors.grey.shade300,
         ),
         shape: MaterialStateProperty.all<RoundedRectangleBorder>(
           RoundedRectangleBorder(
@@ -157,9 +168,7 @@ class MyButton extends StatelessWidget {
           ),
         ),
       ),
-      onPressed: () {
-        onPressed(index);
-      },
+      onPressed: onPressed,
       child: Text(
         title,
         style: const TextStyle(

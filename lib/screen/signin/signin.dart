@@ -7,6 +7,7 @@ import 'package:mk_aromatic_limited/controller/login/login.dart';
 import 'package:mk_aromatic_limited/screen/common screen/choosescreen1.dart';
 import 'package:mk_aromatic_limited/screen/signin/forgot password/email_field.dart';
 import 'package:mk_aromatic_limited/screen/signup/signup.dart';
+import 'package:provider/provider.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({Key? key}) : super(key: key);
@@ -16,15 +17,20 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
+  late LoginProvider loginProvider;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    loginProvider = Provider.of<LoginProvider>(context, listen: false);
+  }
+
   bool _passwordVisible = false;
-  LoginProvider loginProvider = LoginProvider();
 
   @override
   Widget build(BuildContext context) {
-    final ScreemHight = MediaQuery.of(context).size.height;
-    final ScreenWidth = MediaQuery.of(context).size.width;
+    final screemHight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
     return SafeArea(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -36,7 +42,7 @@ class _SignInState extends State<SignIn> {
               width: double.infinity,
             ),
             Container(
-              height: ScreemHight * 0.38,
+              height: screemHight * 0.38,
               decoration: const BoxDecoration(
                 color: Color.fromARGB(255, 255, 95, 39),
                 borderRadius: BorderRadius.only(
@@ -47,7 +53,7 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 children: [
                   SizedBox(
-                    height: ScreemHight * 0.05,
+                    height: screemHight * 0.05,
                   ),
                   Center(
                     child: SizedBox(
@@ -71,10 +77,10 @@ class _SignInState extends State<SignIn> {
             Positioned(
               left: 40,
               right: 40,
-              top: ScreemHight * 0.33,
+              top: screemHight * 0.33,
               child: Container(
-                height: ScreemHight * 0.37,
-                width: ScreenWidth * 0.3,
+                height: screemHight * 0.37,
+                width: screenWidth * 0.3,
                 decoration: BoxDecoration(
                   boxShadow: const [
                     BoxShadow(
@@ -94,7 +100,7 @@ class _SignInState extends State<SignIn> {
                         height: 45,
                       ),
                       TextField(
-                        controller: emailController,
+                        controller: loginProvider.emailController,
                         decoration: InputDecoration(
                           focusedBorder: const UnderlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
@@ -112,6 +118,7 @@ class _SignInState extends State<SignIn> {
                       ),
                       GlobalVariabels.vertical10,
                       TextField(
+                        controller: loginProvider.passwordController,
                         obscureText: !_passwordVisible,
                         decoration: InputDecoration(
                           focusedBorder: const UnderlineInputBorder(
@@ -165,24 +172,19 @@ class _SignInState extends State<SignIn> {
                         ],
                       ),
                       GlobalVariabels.vertical15,
-                      PrimaryButton(
-                        onTap: () async {
-                          String email = emailController.text.trim();
-                          String password = passwordController.text.trim();
-
-                          bool success =
-                              await loginProvider.login(email, password);
-                          if (success) {
-                            // Login successful
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (context) {
-                                return const ChooseScreenOne();
-                              }),
-                            );
-                          } else {}
-                        },
-                        label: "Sign In",
-                      ),
+                      Consumer<LoginProvider>(
+                          builder: (context, LoginProvider value, _) {
+                        return value.isLoading
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : PrimaryButton(
+                                onTap: () async {
+                                  value.login();
+                                },
+                                label: "Sign In",
+                              );
+                      }),
                       GlobalVariabels.vertical10,
                       GestureDetector(
                         onTap: () {
@@ -216,7 +218,7 @@ class _SignInState extends State<SignIn> {
               ),
             ),
             Positioned(
-              bottom: ScreemHight * 0.12,
+              bottom: screemHight * 0.12,
               left: 0,
               right: 0,
               child: SizedBox(

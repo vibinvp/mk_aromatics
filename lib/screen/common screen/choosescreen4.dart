@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/authentication/registration.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen5.dart';
+import 'package:provider/provider.dart';
 
 class ChooseScreen4 extends StatefulWidget {
-  const ChooseScreen4({super.key});
+  final String title;
+  const ChooseScreen4({super.key, required this.title});
 
   @override
   State<ChooseScreen4> createState() => _ChooseScreen4();
@@ -12,6 +15,16 @@ class ChooseScreen4 extends StatefulWidget {
 class _ChooseScreen4 extends State<ChooseScreen4> {
   TextEditingController emailController = TextEditingController();
   int selectedButtonIndex = -1; // Maintain the selected button index
+
+  late RegistrationProvider registrationProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    registrationProvider =
+        Provider.of<RegistrationProvider>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,32 +81,32 @@ class _ChooseScreen4 extends State<ChooseScreen4> {
                     //mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        "Panchayat",
+                      Text(
+                        widget.title,
                         style: TextStyle(color: Colors.grey, fontSize: 17),
                       ),
                       GlobalVariabels.vertical5,
-                      const Text(
-                        "Agonda",
-                        style: TextStyle(color: Colors.black, fontSize: 20),
-                      ),
+                      // const Text(
+                      //   "Agonda",
+                      //   style: TextStyle(color: Colors.black, fontSize: 20),
+                      // ),
                       GlobalVariabels.vertical5,
                       const Text(
                         "Address",
                         style: TextStyle(color: Colors.grey, fontSize: 17),
                       ),
                       GlobalVariabels.vertical5,
-                      const Text(
-                        "Lorem Ipsum has been the industry's standard dummy text ever since nknown printer took a galley of type and scrambled it to make",
+                      Text(
+                        registrationProvider.addressController.text,
                         style: TextStyle(color: Colors.black, fontSize: 12),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      const Text(
-                        "Lorem Ipsum has been the industry's standard dummy text ever since nknown printer took a galley of type and scrambled it to make",
-                        style: TextStyle(color: Colors.black, fontSize: 12),
-                      ),
+                      // const Text(
+                      //   "Lorem Ipsum has been the industry's standard dummy text ever since nknown printer took a galley of type and scrambled it to make",
+                      //   style: TextStyle(color: Colors.black, fontSize: 12),
+                      // ),
                       SizedBox(
                         height: 18,
                       ),

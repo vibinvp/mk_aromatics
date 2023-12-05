@@ -5,4 +5,7 @@ class ApiEndPoint {
   static const String usersndOtp = '${ApiBaseConstant.baseUrlAPI}sent_otp';
 
   static const String userRegister = '${ApiBaseConstant.baseUrlAPI}register';
+  static const String getcategory = '${ApiBaseConstant.baseUrlAPI}getCategory';
+  static const String getSubCategory =
+      '${ApiBaseConstant.baseUrlAPI}getSubCategory';
 }

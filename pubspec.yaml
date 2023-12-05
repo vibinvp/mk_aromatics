@@ -41,6 +41,8 @@ dependencies:
   flutter_secure_storage: ^5.0.3
   dio: ^5.4.0
   fluttertoast: ^8.2.4
+  geolocator: ^10.1.0
+  geocoding: ^2.1.1
 
 dev_dependencies:
   flutter_test:

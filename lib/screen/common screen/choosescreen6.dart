@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
 import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
-import 'package:mk_aromatic_limited/screen/home/homescreen.dart';
+
+import 'package:mk_aromatic_limited/screen/signin/signin.dart';
 
 class ChooseScreen6 extends StatefulWidget {
   const ChooseScreen6({super.key});
@@ -24,7 +24,7 @@ class _ChooseScreen6 extends State<ChooseScreen6> {
       () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const LandingScreen()),
+          MaterialPageRoute(builder: (context) => const SignIn()),
         );
       },
     );

@@ -1,56 +1,61 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:mk_aromatic_limited/helper/api/base_constatnt.dart';
+import 'package:mk_aromatic_limited/constants/core/message.dart';
+import 'package:mk_aromatic_limited/helper/api/api_post_request.dart';
+
 import 'package:mk_aromatic_limited/helper/api/endpoint_constant.dart';
+import 'package:mk_aromatic_limited/model/login/loginmodel.dart';
 
 class LoginProvider with ChangeNotifier {
   bool _isLoading = false;
 
-  bool get isLoading => _isLoading;
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
 
-  Future<bool> login(String email, String password) async {
+  bool get isLoading => _isLoading;
+  LoginModel? loginModel;
+
+  Future<void> login() async {
     _isLoading = true;
     notifyListeners();
 
-    final String apiUrl = ApiEndPoint.userLogin;
+    var param = {
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
 
     try {
-      print("aaaaaaaaaaa$apiUrl");
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "X-API-KEY": "XiH9yEKiUG1t533VyeBddDB0630MIoMh39QWtVpy",
-        },
-        body: {
-          "email": email,
-          "password": password,
-        },
-      );
+      ApiBaseHelper.postAPICall(ApiEndPoint.userLogin, param).then((response) {
+        _isLoading = false;
+        notifyListeners();
+        if (response != null) {
+          loginModel = LoginModel.fromJson(response);
+          if (loginModel != null && loginModel!.status == true) {
+            _isLoading = false;
+            showToast(msg: loginModel!.message ?? '', clr: Colors.green);
+            // Navigator.of(context).pushAndRemoveUntil(
+            //     MaterialPageRoute(builder: (context) {
+            //   return ChooseScreen6();
+            // }), (route) => false);
+            notifyListeners();
+          } else {
+            _isLoading = false;
 
-      _isLoading = false;
-      notifyListeners();
+            notifyListeners();
+            showToast(msg: loginModel!.message ?? '', clr: Colors.red);
+          }
+        } else {
+          _isLoading = false;
 
-      if (response.statusCode == 200) {
-        print("Login successfull: ${response.statusCode}");
-
-        return true;
-      } else {
-        print("Login failed: ${response.statusCode}");
-        print("Response body: ${response.body}");
-
-        Map<String, dynamic> errorResponse = json.decode(response.body);
-        print("Error message: ${errorResponse['error']}");
-
-        return false;
-      }
+          notifyListeners();
+        }
+      });
     } catch (e) {
       print("Error during login: $e");
 
       _isLoading = false;
       notifyListeners();
-      return false;
     }
   }
 }
