@@ -1,5 +1,11 @@
+import 'dart:async';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
+import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
 import 'package:mk_aromatic_limited/screen/signin/signin.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -10,6 +16,41 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  void checkLogin() async {
+    final user = await LocalStorage.getUserLoggedInStatus();
+
+    if (user == 'true') {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+        return LandingScreen();
+      }), (route) => false);
+    } else {
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) {
+        return SignIn();
+      }), (route) => false);
+    }
+  }
+
+  AnimationController? animationController;
+  Animation<double>? animation;
+  startTime() async {
+    await Geolocator.requestPermission();
+    var duration = const Duration(seconds: 2);
+    return Timer(duration, navigationPage);
+  }
+
+  void navigationPage() {
+    checkLogin();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    startTime();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

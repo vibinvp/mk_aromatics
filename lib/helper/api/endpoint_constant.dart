@@ -8,4 +8,5 @@ class ApiEndPoint {
   static const String getcategory = '${ApiBaseConstant.baseUrlAPI}getCategory';
   static const String getSubCategory =
       '${ApiBaseConstant.baseUrlAPI}getSubCategory';
+  static const String editUser = '${ApiBaseConstant.baseUrlAPI}updateProfile';
 }

@@ -11,7 +11,7 @@ import 'package:mk_aromatic_limited/helper/exception/dio_exception.dart';
 import 'package:mk_aromatic_limited/model/category.dart';
 import 'package:mk_aromatic_limited/model/registration/registrationmodel.dart';
 import 'package:mk_aromatic_limited/model/subcat.dart';
-import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen2.dart';
+
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen6.dart';
 
 class RegistrationProvider with ChangeNotifier {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
-import 'package:mk_aromatic_limited/controller/authentication/registration.dart';
+import 'package:mk_aromatic_limited/controller/authentication/registration/registration.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen2.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen3.dart';
 import 'package:provider/provider.dart';

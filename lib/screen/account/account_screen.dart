@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
+import 'package:mk_aromatic_limited/screen/account/innerscreen/editprofile.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -10,11 +12,56 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreenState extends State<AccountScreen> {
+  late String name = "";
+  late String mobileNumber = "";
+
+  late String email = "";
+  late String UserId = "";
+
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _loadName();
+    LoadMobile();
+    LoadEmail();
+    userid();
+  }
+
+  Future<void> _loadName() async {
+    final loadedName = await LocalStorage.getNameSF();
+    setState(() {
+      name = loadedName ?? "Default Name";
+      print('ssssssssssssssssssssssss$name');
+    });
+  }
+
+  Future<void> LoadMobile() async {
+    final loadednumber = await LocalStorage.getUserMobileFromSF();
+    setState(() {
+      mobileNumber = loadednumber ?? "Default Name";
+    });
+  }
+
+  Future<void> LoadEmail() async {
+    final loadedEmail = await LocalStorage.getUserEmailFromSF();
+    setState(() {
+      email = loadedEmail ?? "Default Name";
+    });
+  }
+
+  Future<void> userid() async {
+    final loadedId = await LocalStorage.getUserUserIdSF();
+    setState(() {
+      UserId = loadedId ?? "Default Name";
+      print('ssssssssssssssssssssssss$UserId');
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text("Profile"),
+          title: Text(""),
           automaticallyImplyLeading: false,
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -75,14 +122,45 @@ class _AccountScreenState extends State<AccountScreen> {
                         GlobalVariabels.vertical10,
                         GlobalVariabels.vertical15,
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 60),
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Jhon Deo",
-                                style: TextStyle(
+                              Text(
+                                name.toString(),
+                                style: const TextStyle(
                                     fontSize: 20, fontWeight: FontWeight.w500),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                      MaterialPageRoute(builder: (context) {
+                                    return EditProfile(
+                                      name: name,
+                                      number: mobileNumber,
+                                      email: email,
+                                      userid: UserId,
+                                    );
+                                  }));
+                                },
+                                child: SizedBox(
+                                    height: 25,
+                                    child: Image.asset(
+                                        "assets/images/IMG_3346.jpg")),
+                              )
+                            ],
+                          ),
+                        ),
+                        GlobalVariabels.vertical15,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                mobileNumber.toString(),
+                                style: const TextStyle(
+                                    fontSize: 17, fontWeight: FontWeight.w500),
                               ),
                               SizedBox(
                                   height: 25,
@@ -93,32 +171,14 @@ class _AccountScreenState extends State<AccountScreen> {
                         ),
                         GlobalVariabels.vertical15,
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 60),
+                          padding: const EdgeInsets.symmetric(horizontal: 30),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Mobile",
+                              Text(
+                                email,
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w500),
-                              ),
-                              SizedBox(
-                                  height: 25,
-                                  child:
-                                      Image.asset("assets/images/IMG_3346.jpg"))
-                            ],
-                          ),
-                        ),
-                        GlobalVariabels.vertical15,
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 60),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "e-Mail",
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.w500),
+                                    fontSize: 14, fontWeight: FontWeight.w500),
                               ),
                               SizedBox(
                                   height: 25,

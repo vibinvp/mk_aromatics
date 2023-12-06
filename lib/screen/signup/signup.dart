@@ -3,7 +3,7 @@ import 'package:mk_aromatic_limited/constants/color_constant.dart';
 import 'package:mk_aromatic_limited/constants/core/message.dart';
 
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
-import 'package:mk_aromatic_limited/controller/authentication/registration.dart';
+import 'package:mk_aromatic_limited/controller/authentication/registration/registration.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen1.dart';
 import 'package:mk_aromatic_limited/screen/signin/signin.dart';
 import 'package:provider/provider.dart';

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mk_aromatic_limited/controller/authentication/registration.dart';
-import 'package:mk_aromatic_limited/controller/login/login.dart';
+import 'package:mk_aromatic_limited/controller/authentication/registration/registration.dart';
+import 'package:mk_aromatic_limited/controller/edit%20profile/edit_profile.dart';
+import 'package:mk_aromatic_limited/controller/authentication/login/login.dart';
+import 'package:mk_aromatic_limited/screen/home/innerscreen/address_screen.dart';
 import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
 
 import 'package:mk_aromatic_limited/screen/landing_page/services/bottom_nav_service.dart';
@@ -33,6 +35,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (_) => RegistrationProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (_) => ProfileEditProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -41,7 +46,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: SplashScreen(),
+        home: AddressScreen(),
       ),
     );
   }
