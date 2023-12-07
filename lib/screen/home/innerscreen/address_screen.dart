@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/common/shimmer_effect.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/getAddress/get_address_controller.dart';
+import 'package:mk_aromatic_limited/controller/remove%20address/remove_address.dart';
 import 'package:mk_aromatic_limited/screen/home/innerscreen/add_address.dart';
+import 'package:mk_aromatic_limited/screen/home/innerscreen/editaddress.dart';
+import 'package:provider/provider.dart';
 
 class AddressScreen extends StatefulWidget {
   const AddressScreen({super.key});
@@ -10,6 +15,21 @@ class AddressScreen extends StatefulWidget {
 }
 
 class _AddressScreenState extends State<AddressScreen> {
+  late GetAddressController getAddressController;
+  late RemoveAddressController removeAddressController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAddressController =
+        Provider.of<GetAddressController>(context, listen: false);
+    getAddressController =
+        Provider.of<GetAddressController>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      getAddressController.geAddress(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +38,7 @@ class _AddressScreenState extends State<AddressScreen> {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            icon: Icon(Icons.arrow_back)),
+            icon: const Icon(Icons.arrow_back)),
         centerTitle: true,
         title: const Text(
           "My Address",
@@ -39,7 +59,7 @@ class _AddressScreenState extends State<AddressScreen> {
                         onPressed: () {
                           Navigator.of(context)
                               .push(MaterialPageRoute(builder: (context) {
-                            return AddAddress();
+                            return const AddAddressScreen();
                           }));
                         },
                         icon: const Icon(
@@ -56,85 +76,191 @@ class _AddressScreenState extends State<AddressScreen> {
               ),
             ),
             Expanded(
-              child: ListView.builder(
-                  shrinkWrap: true,
-                  physics: BouncingScrollPhysics(),
-                  itemCount: 4,
-                  itemBuilder: (BuildContext context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        height: 130,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: Colors.grey.shade200),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 15),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                "Vibin Vp",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.bold),
-                              ),
-                              const Text(
-                                "House No : 205, 2nd Cross, BTM Layout  ",
-                                maxLines: 3,
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.bold),
-                              ),
-                              const Text(
-                                "Bangalore, Karnataka 560065",
-                                maxLines: 3,
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.bold),
-                              ),
-                              GlobalVariabels.vertical15,
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  SizedBox(
-                                    height: 20,
-                                    child: ElevatedButton(
-                                        style: const ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStatePropertyAll(
-                                                    Colors.grey)),
-                                        onPressed: () {},
-                                        child: Text("Edit",
-                                            style: TextStyle(
-                                                fontSize: 11,
-                                                color: Colors.black))),
+              child: Consumer<GetAddressController>(
+                  builder: (context, GetAddressController value, _) {
+                return value.isLoadCategory
+                    ? Center(
+                        child: ShimmerEffect(),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: value.addressList.length,
+                        itemBuilder: (BuildContext context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              onTap: () {},
+                              child: Container(
+                                //height: 130,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(16),
+                                    color: Colors.grey.shade100),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 15),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            value.addressList[index].name ?? "",
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              SizedBox(
+                                                height: 20,
+                                                child: ElevatedButton(
+                                                    style: const ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStatePropertyAll(
+                                                                Colors.grey)),
+                                                    onPressed: () {
+                                                      Navigator.of(context).push(
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) {
+                                                        return EditAddressScreen(
+                                                          address:
+                                                              value.addressList[
+                                                                  index],
+                                                        );
+                                                      }));
+                                                    },
+                                                    child: const Text("Edit",
+                                                        style: TextStyle(
+                                                            fontSize: 11,
+                                                            color:
+                                                                Colors.black))),
+                                              ),
+                                              const SizedBox(
+                                                width: 10,
+                                              ),
+                                              Consumer(builder: (context,
+                                                  RemoveAddressController
+                                                      remove,
+                                                  _) {
+                                                final addressId =
+                                                    value.addressList[index].id;
+                                                return SizedBox(
+                                                  height: 20,
+                                                  child: ElevatedButton(
+                                                      style: const ButtonStyle(
+                                                          backgroundColor:
+                                                              MaterialStatePropertyAll(
+                                                                  Colors.grey)),
+                                                      onPressed: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              title: const Text(
+                                                                  'Are You Sure?'),
+                                                              content: const Text(
+                                                                  'Do you want to remove?'),
+                                                              actions: [
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  },
+                                                                  child: const Text(
+                                                                      'Cancel'),
+                                                                ),
+                                                                TextButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    remove.removeAddress(
+                                                                        context,
+                                                                        addressId);
+                                                                  },
+                                                                  child: const Text(
+                                                                      'Remove'),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                      child: const Text(
+                                                        "Remove",
+                                                        style: TextStyle(
+                                                            fontSize: 11,
+                                                            color:
+                                                                Color.fromARGB(
+                                                                    255,
+                                                                    101,
+                                                                    38,
+                                                                    38)),
+                                                      )),
+                                                );
+                                              })
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        value.addressList[index].address ?? "",
+                                        maxLines: 3,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        value.addressList[index].area ?? "",
+                                        maxLines: 3,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        value.addressList[index].city ?? "",
+                                        maxLines: 3,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        value.addressList[index].state ?? "",
+                                        maxLines: 3,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        value.addressList[index].pincode ?? "",
+                                        maxLines: 3,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Text(
+                                        value.addressList[index].mobile ?? "",
+                                        maxLines: 3,
+                                        style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  SizedBox(
-                                    height: 20,
-                                    child: ElevatedButton(
-                                        style: const ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStatePropertyAll(
-                                                    Colors.grey)),
-                                        onPressed: () {},
-                                        child: Text(
-                                          "Remove",
-                                          style: TextStyle(
-                                              fontSize: 11,
-                                              color: const Color.fromARGB(
-                                                  255, 101, 38, 38)),
-                                        )),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  }),
+                                ),
+                              ),
+                            ),
+                          );
+                        });
+              }),
             )
           ],
         ),

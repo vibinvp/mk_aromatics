@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mk_aromatic_limited/common/primary_button.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/waste%20pickup/pickup.dart';
+import 'package:mk_aromatic_limited/screen/home/innerscreen/address_screen.dart';
+import 'package:provider/provider.dart';
 
 class PickUpScreen extends StatefulWidget {
   const PickUpScreen({super.key});
@@ -106,6 +110,29 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
     'Paper': ['Recyclable Paper', 'Non-Recyclable Paper', 'Cardboard'],
     'Industrial Waste': ['Cafeteria refuse', 'dirt and gravel', 'scrap metals'],
   };
+
+  DateTime selectedDate = DateTime.now();
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  late ProfileController profileController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    profileController = Provider.of<ProfileController>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -228,26 +255,110 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
           ),
         ),
         GlobalVariabels.vertical10,
-        Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                blurRadius: 3.0,
-                //offset: Offset(2, 2),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 3.0,
+                    //offset: Offset(2, 2),
+                  ),
+                ],
               ),
-            ],
-          ),
-          child: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.add_a_photo_outlined,
-                size: 45,
-              )),
+              child: IconButton(
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (ctx) {
+                        return SimpleDialog(
+                          insetPadding: const EdgeInsets.symmetric(
+                            horizontal: 100,
+                          ),
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    await profileController
+                                        .getImage(ImageSource.gallery);
+
+                                    // ignore: use_build_context_synchronously
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Column(
+                                    children: [
+                                      Icon(
+                                        Icons.image,
+                                        size: 40,
+                                      ),
+                                      Text('Gallery'),
+                                    ],
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () async {
+                                    profileController
+                                        .getImage(ImageSource.camera);
+
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: const Column(
+                                    children: [
+                                      Icon(
+                                        Icons.camera_alt,
+                                        size: 40,
+                                      ),
+                                      Text('Camera'),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: Icon(
+                    Icons.add_a_photo_outlined,
+                    size: 45,
+                  )),
+            ),
+            Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    blurRadius: 3.0,
+                    //offset: Offset(2, 2),
+                  ),
+                ],
+              ),
+              child: IconButton(
+                  onPressed: () {
+                    _selectDate(context);
+                  },
+                  icon: Icon(
+                    Icons.calendar_month,
+                    size: 45,
+                  )),
+            ),
+          ],
         ),
         GlobalVariabels.vertical10,
-        PrimaryButton(onTap: () {}, label: "Submit"),
+        PrimaryButton(
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return AddressScreen();
+              }));
+            },
+            label: "Submit"),
         GlobalVariabels.vertical15
       ],
     );

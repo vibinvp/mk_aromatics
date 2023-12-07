@@ -3,41 +3,27 @@ import 'package:mk_aromatic_limited/helper/api/api_post_request.dart';
 import 'package:mk_aromatic_limited/helper/api/endpoint_constant.dart';
 import 'package:mk_aromatic_limited/helper/exception/dio_exception.dart';
 import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
-import 'package:mk_aromatic_limited/model/history/historymodel.dart';
+import 'package:mk_aromatic_limited/model/getAddress.dart/getaddress_model.dart';
 
-class HistoryController with ChangeNotifier {
-  String name = "";
-  String mobileNumber = "";
-
-  String email = "";
-  String userId = "";
-
-  void loadName() async {
-    name = await LocalStorage.getNameSF() ?? '';
-    mobileNumber = await LocalStorage.getUserMobileFromSF() ?? '';
-    userId = await LocalStorage.getUserUserIdSF() ?? '';
-
-    print('ssssssssssssssssssssssss$userId');
-  }
-
-  List<HistoryList> historyList = [];
-  History? historyModel;
+class GetAddressController with ChangeNotifier {
+  List<GetAddressList> addressList = [];
+  GetAddress? getAddressModel;
   bool isLoadCategory = true;
 
-  void getHistoryList(BuildContext context) async {
+  void geAddress(BuildContext context) async {
     try {
       isLoadCategory = true;
       notifyListeners();
       final user = await LocalStorage.getUserUserIdSF() ?? '';
-      final response = await ApiBaseHelper.postAPICall(ApiEndPoint.gethistory, {
+      final response = await ApiBaseHelper.postAPICall(ApiEndPoint.getAddress, {
         'user_id': user,
       });
 
       if (response != null) {
-        historyModel = History.fromJson(response);
-        if (historyModel != null && historyModel!.data != null) {
-          historyList = ((response['data']) as List)
-              .map((data) => HistoryList.fromJson(data))
+        getAddressModel = GetAddress.fromJson(response);
+        if (getAddressModel != null && getAddressModel!.data != null) {
+          addressList = ((response['data']) as List)
+              .map((data) => GetAddressList.fromJson(data))
               .toList();
 
           isLoadCategory = false;
