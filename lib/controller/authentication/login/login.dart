@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/helper/exception/dio_exception.dart';
 import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mk_aromatic_limited/constants/core/message.dart';
@@ -63,7 +65,7 @@ class LoginProvider with ChangeNotifier {
               (route) => false,
             );
             var getmodel = loginModel!.data![0];
-
+            updateFcmToken(getmodel.userId.toString(), context);
             await LocalStorage.saveUserLoggedInStatus('true');
 
             await LocalStorage.saveUserEmailSF(getmodel.email.toString());
@@ -90,6 +92,28 @@ class LoginProvider with ChangeNotifier {
 
       _isLoading = false;
       notifyListeners();
+    }
+  }
+
+  Future<void> updateFcmToken(String? userId, context) async {
+    try {
+      final fcmToken = await LocalStorage.getUseFcmTokentSF();
+      userId = userId == '' ? await LocalStorage.getUserUserIdSF() : userId;
+      var paremeters = {
+        'user_id': userId,
+        'fcm_key': fcmToken,
+      };
+      final response =
+          await ApiBaseHelper.postAPICall(ApiEndPoint.fcmKey, paremeters);
+
+      if (response != null) {
+      } else {}
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error occurred: $e");
+      }
+      notifyListeners();
+      DioExceptionhandler.errorHandler(e);
     }
   }
 }

@@ -22,11 +22,16 @@ class LocalStorage {
   static String userPincodeKey = "USEREPINCODEKEY";
   static String nameKey = "NAMEKEY";
   static String selectedService = "SELECTEDSERVICE";
+  static String fcmToken = "FCMTOKEN";
 
   // saving the data to SF
 
   static Future<void> saveUserLoggedInStatus(String isUserLoggedIn) async {
     storage.write(key: userLoggedinKey, value: isUserLoggedIn);
+  }
+
+  static Future<void> saveUserFcmTokenSF(String token) async {
+    return await storage.write(key: fcmToken, value: token);
   }
 
   static Future<void> saveUserNameSF(String userName) async {
@@ -101,6 +106,10 @@ class LocalStorage {
 
   static Future<String?> getUserLoggedInStatus() async {
     return storage.read(key: userLoggedinKey);
+  }
+
+  static Future<String?> getUseFcmTokentSF() async {
+    return storage.read(key: fcmToken);
   }
 
   static Future<String?> getNameSF() async {

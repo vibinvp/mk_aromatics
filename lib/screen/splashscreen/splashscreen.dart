@@ -3,6 +3,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mk_aromatic_limited/common/local_notification_service.dart';
+import 'package:mk_aromatic_limited/common/notification_helper.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
 import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
 import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
@@ -36,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Animation<double>? animation;
   startTime() async {
     await Geolocator.requestPermission();
-    var duration = const Duration(seconds: 2);
+    var duration = const Duration(seconds: 5);
     return Timer(duration, navigationPage);
   }
 
@@ -47,6 +49,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    //notofication----------------
+
+    FireBasePushNotificationService.notificationControll(context);
+    LocalNotificationService.initnotification();
+
+    //notofication----------------
     super.initState();
     startTime();
   }

@@ -1,4 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/common/notification_helper.dart';
 import 'package:mk_aromatic_limited/controller/add%20address/add_address_controller.dart';
 import 'package:mk_aromatic_limited/controller/authentication/registration/registration.dart';
 import 'package:mk_aromatic_limited/controller/edit%20address/edit_address.dart';
@@ -8,19 +11,26 @@ import 'package:mk_aromatic_limited/controller/getAddress/get_address_controller
 import 'package:mk_aromatic_limited/controller/history/history.dart';
 import 'package:mk_aromatic_limited/controller/remove%20address/remove_address.dart';
 import 'package:mk_aromatic_limited/controller/waste%20pickup/pickup.dart';
-import 'package:mk_aromatic_limited/screen/home/innerscreen/address_screen.dart';
-import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
 
 import 'package:mk_aromatic_limited/screen/landing_page/services/bottom_nav_service.dart';
-import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen1.dart';
-import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen6.dart';
-import 'package:mk_aromatic_limited/screen/signin/signin.dart';
-import 'package:mk_aromatic_limited/screen/signup/signup.dart';
+
 import 'package:mk_aromatic_limited/screen/splashscreen/splashscreen.dart';
 
 import 'package:provider/provider.dart';
 
-void main() {
+int notifId = 0;
+@pragma('vm:entry-point')
+void main() async {
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp();
+    FirebaseMessaging.onBackgroundMessage(
+      FireBasePushNotificationService.firebaseMessagingBackgroundHandler,
+    );
+  } catch (error) {
+    print('Error initializing Firebase: $error');
+  }
+
   runApp(const MyApp());
 }
 

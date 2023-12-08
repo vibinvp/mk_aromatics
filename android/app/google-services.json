@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "780690854195",
+    "project_id": "mk-aromatics",
+    "storage_bucket": "mk-aromatics.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:780690854195:android:f0f2e69ea6de1443506e46",
+        "android_client_info": {
+          "package_name": "com.mkaromaticlimited.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPiNOItPA82bPBf4R5lhwx4jyYRMxFV70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

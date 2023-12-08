@@ -85,6 +85,7 @@ class _EditProfileState extends State<EditProfile> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
+                enabled: false,
                 controller: profileEditProvider.emailController,
                 decoration: InputDecoration(
                   hintText: "Enter Email",

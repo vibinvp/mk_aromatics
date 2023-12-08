@@ -111,7 +111,7 @@ class _ChooseScreen5 extends State<ChooseScreen5> {
                       GlobalVariabels.vertical15,
                       Consumer<RegistrationProvider>(
                           builder: (context, value, _) {
-                        return value.isLoading
+                        return value.isLoadSndOtp
                             ? const Center(
                                 child: CircularProgressIndicator(),
                               )
@@ -124,8 +124,9 @@ class _ChooseScreen5 extends State<ChooseScreen5> {
                                       const Color.fromARGB(255, 255, 95, 39),
                                     )),
                                     onPressed: () {
-                                      value.registration(
-                                          value.selectedSubCatId, context);
+                                      value.sndotp(context);
+                                      // value.registration(
+                                      //     value.selectedSubCatId, context);
                                     },
                                     child: const Text(
                                       "Submit",

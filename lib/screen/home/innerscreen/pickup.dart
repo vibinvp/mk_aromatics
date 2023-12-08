@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mk_aromatic_limited/common/primary_button.dart';
+import 'package:mk_aromatic_limited/common/shimmer_effect.dart';
+import 'package:mk_aromatic_limited/constants/color_constant.dart';
+import 'package:mk_aromatic_limited/constants/core/message.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
 import 'package:mk_aromatic_limited/controller/waste%20pickup/pickup.dart';
+import 'package:mk_aromatic_limited/model/pickup%20category/pickup_category.dart';
 import 'package:mk_aromatic_limited/screen/home/innerscreen/address_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -41,11 +45,8 @@ class _PickUpScreenState extends State<PickUpScreen> {
                             onPressed: () {
                               Navigator.of(context).pop();
                             },
-                            icon: Icon(Icons.arrow_back)),
+                            icon: const Icon(Icons.arrow_back)),
                       ],
-                    ),
-                    SizedBox(
-                      height: ScreemHight * 0.1,
                     ),
                     const Text(
                       "Select your waste type",
@@ -59,7 +60,6 @@ class _PickUpScreenState extends State<PickUpScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 30),
                       child: Container(
-                        // height: ScreemHight * .45,
                         width: ScreenWidth * 0.9,
                         decoration: BoxDecoration(
                             boxShadow: const [
@@ -86,52 +86,35 @@ class _PickUpScreenState extends State<PickUpScreen> {
 }
 
 class WasteManagementDropdown extends StatefulWidget {
+  const WasteManagementDropdown({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _WasteManagementDropdownState createState() =>
       _WasteManagementDropdownState();
 }
 
 class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
-  String selectedCategory = 'Plastic';
-  List<String> selectedSubCategories = [];
-
-  Map<String, List<String>> wasteCategories = {
-    'Plastic': [
-      'Post Consumer ',
-      'Post Consumer - MSW',
-      'Industrial Plastic',
-      'Thermocol'
-    ],
-    'Biodegradable': [
-      ' Green garbage ',
-      'food waste',
-      'biodegradable plastics '
-    ],
-    'Paper': ['Recyclable Paper', 'Non-Recyclable Paper', 'Cardboard'],
-    'Industrial Waste': ['Cafeteria refuse', 'dirt and gravel', 'scrap metals'],
-  };
-
-  DateTime selectedDate = DateTime.now();
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-        context: context,
-        initialDate: selectedDate,
-        firstDate: DateTime(2015, 8),
-        lastDate: DateTime(2101));
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
+  bool _validateWeight = false;
 
   late ProfileController profileController;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     profileController = Provider.of<ProfileController>(context, listen: false);
+
+    profileController.selectedSubCategories = [];
+
+    profileController.wastetypesub = [];
+    profileController.selectedCategories = '';
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      profileController.wastePickUp(context);
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -158,65 +141,83 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
           ),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: DropdownButtonHideUnderline(
-              child: DropdownButton<String>(
-                icon: const Icon(
-                  Icons.check,
-                  color: GlobalVariabels.appColor,
-                ),
-                value: selectedCategory,
-                onChanged: (String? newValue) {
-                  setState(() {
-                    selectedCategory = newValue!;
-                    selectedSubCategories = [];
-                  });
-                },
-                items: wasteCategories.keys
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-            ),
+            child: Consumer(builder: (context, ProfileController data, _) {
+              return data.isLoadCategory
+                  ? const SizedBox(
+                      height: 80,
+                      child: SingleBallnerItemSimmer(),
+                    )
+                  : DropdownButtonFormField(
+                      decoration: const InputDecoration(
+                          hintText: "Select Category  ",
+                          border: InputBorder.none),
+                      onChanged: (String? newValue) {
+                        for (var element in data.wastetype) {
+                          if (element.id == newValue) {
+                            data.setCategory(element.wasteName ?? '');
+                          }
+                        }
+                        data.wastePickUpsub(context, newValue ?? '');
+                      },
+                      // validator: (value) {
+                      //   if (value == null || value.isEmpty) {
+                      //     return 'Please select a waste type';
+                      //   }
+                      //   return null;
+                      // },
+                      items: data.pickUpcategory!.data!
+                          .map<DropdownMenuItem<String>>(
+                              (PickupCategoryList value) {
+                        return DropdownMenuItem<String>(
+                          value: value.id,
+                          child: Text(value.wasteName ?? ''),
+                        );
+                      }).toList(),
+                    );
+            }),
           ),
         ),
         GlobalVariabels.vertical10,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: Column(
-            // crossAxisAlignment: CrossAxisAlignment.center,
-            children: wasteCategories[selectedCategory]!.map((subCategory) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 1),
-                child: Container(
-                  decoration: BoxDecoration(color: Colors.grey.shade200),
-                  child: CheckboxListTile(
-                    //checkColor: GlobalVariabels.appColor,
-                    activeColor: GlobalVariabels.appColor,
-
-                    title: Center(
-                      child: Text(
-                        subCategory,
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    ),
-                    value: selectedSubCategories.contains(subCategory),
-                    onChanged: (bool? value) {
-                      setState(() {
-                        if (value != null && value) {
-                          selectedSubCategories.add(subCategory);
-                        } else {
-                          selectedSubCategories.remove(subCategory);
-                        }
-                      });
-                    },
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
+          child: Consumer(builder: (context, ProfileController data, _) {
+            return data.isLoadsubCategory
+                ? const SizedBox(
+                    height: 280,
+                    child: ShimmerEffect(),
+                  )
+                : data.wastetypesub.isEmpty
+                    ? const Center(
+                        child: Text('No data'),
+                      )
+                    : Column(
+                        children: data.wastetypesub.map((subCategory) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 1),
+                            child: Container(
+                              decoration:
+                                  BoxDecoration(color: Colors.grey.shade200),
+                              child: CheckboxListTile(
+                                activeColor: GlobalVariabels.appColor,
+                                title: Center(
+                                  child: Text(
+                                    subCategory.subWasteType ?? '',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                                value: data.selectedSubCategories.contains(
+                                    subCategory
+                                        .subWasteType), // Use a unique identifier
+                                onChanged: (bool? value) {
+                                  data.setSubCate(
+                                      value, subCategory.subWasteType);
+                                },
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      );
+          }),
         ),
         GlobalVariabels.vertical10,
         Padding(
@@ -246,9 +247,15 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
                     blurRadius: 5.0,
                   ),
                 ]),
-                child: const TextField(
+                child: TextFormField(
+                  controller: profileController.weightcontroller,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                      border: InputBorder.none, hintText: "   KG"),
+                    border: InputBorder.none,
+                    hintText: "   KG",
+                    errorText:
+                        _validateWeight ? 'Please enter a valid weight' : null,
+                  ),
                 ),
               ),
             ],
@@ -258,105 +265,146 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 3.0,
-                    //offset: Offset(2, 2),
+            Column(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey,
+                        blurRadius: 3.0,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-              child: IconButton(
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (ctx) {
-                        return SimpleDialog(
-                          insetPadding: const EdgeInsets.symmetric(
-                            horizontal: 100,
-                          ),
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                  child: IconButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (ctx) {
+                            return SimpleDialog(
+                              insetPadding: const EdgeInsets.symmetric(
+                                horizontal: 100,
+                              ),
                               children: [
-                                InkWell(
-                                  onTap: () async {
-                                    await profileController
-                                        .getImage(ImageSource.gallery);
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    InkWell(
+                                      onTap: () async {
+                                        await profileController
+                                            .getImage(ImageSource.gallery);
 
-                                    // ignore: use_build_context_synchronously
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Column(
-                                    children: [
-                                      Icon(
-                                        Icons.image,
-                                        size: 40,
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Column(
+                                        children: [
+                                          Icon(
+                                            Icons.image,
+                                            size: 40,
+                                          ),
+                                          Text('Gallery'),
+                                        ],
                                       ),
-                                      Text('Gallery'),
-                                    ],
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: () async {
-                                    profileController
-                                        .getImage(ImageSource.camera);
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    InkWell(
+                                      onTap: () async {
+                                        profileController
+                                            .getImage(ImageSource.camera);
 
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: const Column(
-                                    children: [
-                                      Icon(
-                                        Icons.camera_alt,
-                                        size: 40,
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: const Column(
+                                        children: [
+                                          Icon(
+                                            Icons.camera_alt,
+                                            size: 40,
+                                          ),
+                                          Text('Camera'),
+                                        ],
                                       ),
-                                      Text('Camera'),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ],
-                            ),
-                          ],
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                  icon: Icon(
-                    Icons.add_a_photo_outlined,
-                    size: 45,
-                  )),
+                      icon: const Icon(
+                        Icons.add_a_photo_outlined,
+                        size: 45,
+                      )),
+                ),
+                GlobalVariabels.vertical5,
+                Consumer(builder: (context, ProfileController value, _) {
+                  int originalStringLength =
+                      value.image == null ? 0 : value.image!.path.length;
+
+                  // Use substring to get the last 10 characters
+                  String last10Characters = '';
+                  if (value.image != null) {
+                    last10Characters = value.image!.path.substring(
+                        originalStringLength - 15, originalStringLength);
+                  }
+                  return Text(value.image == null
+                      ? "select image"
+                      : last10Characters.replaceAll('/', ''));
+                }),
+              ],
             ),
-            Container(
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 3.0,
-                    //offset: Offset(2, 2),
+            Consumer(builder: (context, ProfileController value, _) {
+              return Column(
+                children: [
+                  Container(
+                    decoration: const BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 3.0,
+                        ),
+                      ],
+                    ),
+                    child: IconButton(
+                        onPressed: () {
+                          value.selectDate(context);
+                        },
+                        icon: const Icon(
+                          Icons.calendar_month,
+                          size: 45,
+                        )),
                   ),
+                  GlobalVariabels.vertical5,
+                  Text(value.selectedDate.toString().split(" ").first)
                 ],
-              ),
-              child: IconButton(
-                  onPressed: () {
-                    _selectDate(context);
-                  },
-                  icon: Icon(
-                    Icons.calendar_month,
-                    size: 45,
-                  )),
-            ),
+              );
+            }),
           ],
         ),
         GlobalVariabels.vertical10,
+        GlobalVariabels.vertical10,
         PrimaryButton(
             onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-                return AddressScreen();
-              }));
+              if (profileController.selectedCategories.trim().isEmpty) {
+                showToast(msg: "Select category", clr: AppColoring.errorPopUp);
+              } else if (profileController.selectedSubCategories.isEmpty) {
+                showToast(
+                    msg: "Select Waste Type", clr: AppColoring.errorPopUp);
+              } else if (profileController.weightcontroller.text
+                  .trim()
+                  .isEmpty) {
+                showToast(msg: "Enter Weight", clr: AppColoring.errorPopUp);
+              } else {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (context) {
+                  return const AddressScreen();
+                }));
+              }
             },
             label: "Submit"),
         GlobalVariabels.vertical15
@@ -364,139 +412,3 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
     );
   }
 }
-
-class approximate extends StatelessWidget {
-  const approximate({
-    super.key,
-    required this.ScreemHight,
-  });
-
-  final double ScreemHight;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-              height: 50,
-              decoration: BoxDecoration(color: Colors.grey.shade200),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  "Approximate Weight  ",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                ),
-              )),
-          Container(
-            height: ScreemHight * 0.05,
-            color: Colors.grey.shade300,
-            child: TextField(
-              decoration: InputDecoration(hintText: "KG"),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-// class WasteManagementDropdown extends StatefulWidget {
-//   @override
-//   _WasteManagementDropdownState createState() =>
-//       _WasteManagementDropdownState();
-// }
-
-// class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
-//   String selectedCategory = 'Plastics';
-//   String selectedSubCategory = 'Post Consumer Segregated';
-
-//   Map<String, List<String>> wasteCategories = {
-//     'Plastics': [
-//       'Post Consumer Segregated',
-//       'Post Consumer - MSW',
-//       'Industrial Plastic',
-//       'Thermocol'
-//     ],
-//     'Biodegradable': ['Category A', 'Category B', 'Category C'],
-//     'Paper': ['Recyclable Paper', 'Non-Recyclable Paper', 'Cardboard'],
-//     'Industrial Waste': ['Category X', 'Category Y', 'Category Z'],
-//   };
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final ScreemHight = MediaQuery.of(context).size.height;
-//     final ScreenWidth = MediaQuery.of(context).size.width;
-//     return Column(
-//       mainAxisAlignment: MainAxisAlignment.center,
-//       children: [
-//         GlobalVariabels.vertical15,
-//         GlobalVariabels.vertical15,
-//         Container(
-//           width: ScreenWidth * 0.7,
-//           decoration: BoxDecoration(
-//             borderRadius: BorderRadius.circular(10),
-//             boxShadow: const [
-//               BoxShadow(
-//                 color: Colors.grey,
-//                 blurRadius: 3.0,
-//                 offset: Offset(2, 2),
-//               ),
-//             ],
-//             color: Colors.white,
-//           ),
-//           child: Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 10),
-//             child: DropdownButtonHideUnderline(
-//               child: DropdownButton<String>(
-//                 icon: const Icon(
-//                   Icons.check,
-//                   color: GlobalVariabels.appColor,
-//                 ),
-//                 value: selectedCategory,
-//                 onChanged: (String? newValue) {
-//                   setState(() {
-//                     selectedCategory = newValue!;
-//                     selectedSubCategory = wasteCategories[selectedCategory]![0];
-//                   });
-//                 },
-//                 items: wasteCategories.keys
-//                     .map<DropdownMenuItem<String>>((String value) {
-//                   return DropdownMenuItem<String>(
-//                     value: value,
-//                     child: Text(value),
-//                   );
-//                 }).toList(),
-//               ),
-//             ),
-//           ),
-//         ),
-//         GlobalVariabels.vertical10,
-//         Container(
-//           width: ScreenWidth * 0.7,
-//           decoration: BoxDecoration(color: Colors.grey.shade400),
-//           child: Padding(
-//             padding: const EdgeInsets.symmetric(horizontal: 10),
-//             child: DropdownButton<String>(
-//               value: selectedSubCategory,
-//               onChanged: (String? newValue) {
-//                 setState(() {
-//                   selectedSubCategory = newValue!;
-//                 });
-//               },
-//               items: wasteCategories[selectedCategory]!
-//                   .map<DropdownMenuItem<String>>((String value) {
-//                 return DropdownMenuItem<String>(
-//                   value: value,
-//                   child: Text(value),
-//                 );
-//               }).toList(),
-//             ),
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

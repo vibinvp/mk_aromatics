@@ -3,6 +3,7 @@ import 'package:mk_aromatic_limited/common/shimmer_effect.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
 import 'package:mk_aromatic_limited/controller/getAddress/get_address_controller.dart';
 import 'package:mk_aromatic_limited/controller/remove%20address/remove_address.dart';
+import 'package:mk_aromatic_limited/controller/waste%20pickup/pickup.dart';
 import 'package:mk_aromatic_limited/screen/home/innerscreen/add_address.dart';
 import 'package:mk_aromatic_limited/screen/home/innerscreen/editaddress.dart';
 import 'package:provider/provider.dart';
@@ -252,6 +253,24 @@ class _AddressScreenState extends State<AddressScreen> {
                                         style: const TextStyle(
                                             fontSize: 13,
                                             fontWeight: FontWeight.bold),
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Consumer(builder: (context,
+                                              ProfileController data, _) {
+                                            return ElevatedButton(
+                                                onPressed: () {
+                                                  data.placeOrder(
+                                                      context,
+                                                      value.addressList[index]
+                                                              .id ??
+                                                          '');
+                                                },
+                                                child: Text("Next"));
+                                          })
+                                        ],
                                       ),
                                     ],
                                   ),

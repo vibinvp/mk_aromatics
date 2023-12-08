@@ -1,4 +1,8 @@
 import 'dart:convert';
+import 'package:mk_aromatic_limited/constants/color_constant.dart';
+import 'package:mk_aromatic_limited/model/registration/message_response_model.dart';
+import 'package:mk_aromatic_limited/screen/signup/otpscreen.dart';
+import 'package:otp_text_field/otp_field.dart';
 import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -25,6 +29,8 @@ class RegistrationProvider with ChangeNotifier {
   TextEditingController pincodeController = TextEditingController();
   TextEditingController stateController = TextEditingController();
   TextEditingController emailController = TextEditingController();
+  OtpFieldController otpController = OtpFieldController();
+  TextEditingController enteirdOTPController = TextEditingController();
 
   bool get isLoading => _isLoading;
   String lat = "0";
@@ -77,6 +83,7 @@ class RegistrationProvider with ChangeNotifier {
       'city': cityController.text,
       'pincode': pincodeController.text,
       'state': stateController.text,
+      'otp': enteirdOTPController.text,
       'lattitude': lat,
       'longitude': log,
       'sub_category_id': subid.toString(),
@@ -213,5 +220,57 @@ class RegistrationProvider with ChangeNotifier {
       DioExceptionhandler.errorHandler(e);
     }
     return isTrue;
+  }
+
+  setPinFromPayment(String pin) {
+    enteirdOTPController.text = pin;
+
+    notifyListeners();
+  }
+
+  MessageModel? model;
+  bool isLoadSndOtp = false;
+  Future<bool> sndotp(
+    BuildContext context,
+  ) async {
+    bool check = false;
+    notifyListeners();
+    try {
+      isLoadSndOtp = true;
+      notifyListeners();
+
+      var paremeters = {'email': emailController.text};
+
+      await ApiBaseHelper.postAPICall(ApiEndPoint.usersndOtp, paremeters)
+          .then((value) {
+        model = MessageModel.fromJson(value);
+        if (model != null) {
+          if (model!.status == true) {
+            showToast(msg: model!.message ?? '', clr: AppColoring.successPopup);
+
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+              return ScreenOtp();
+            }));
+            check = true;
+            notifyListeners();
+            isLoadSndOtp = false;
+            notifyListeners();
+          } else {
+            showToast(msg: model!.message ?? '', clr: AppColoring.errorPopUp);
+            isLoadSndOtp = false;
+            notifyListeners();
+          }
+        } else {
+          isLoadSndOtp = false;
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      print(e);
+      isLoadSndOtp = false;
+      notifyListeners();
+      DioExceptionhandler.errorHandler(e);
+    }
+    return check;
   }
 }

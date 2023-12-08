@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/authentication/login/login.dart';
 import 'package:mk_aromatic_limited/screen/landing_page/services/bottom_nav_service.dart';
 import 'package:mk_aromatic_limited/screen/account/account_screen.dart';
 import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen6.dart';
@@ -18,6 +19,13 @@ class LandingScreen extends StatefulWidget {
 class _LandingScreen extends State<LandingScreen> {
   TextEditingController emailController = TextEditingController();
   int selectedButtonIndex = -1; // Maintain the selected button index
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      context.read<LoginProvider>().updateFcmToken('', context);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

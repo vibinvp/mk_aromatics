@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/constants/core/message.dart';
 
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
 import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
 import 'package:mk_aromatic_limited/screen/account/innerscreen/editprofile.dart';
+import 'package:mk_aromatic_limited/screen/signin/signin.dart';
 
 class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
@@ -58,10 +60,59 @@ class _AccountScreenState extends State<AccountScreen> {
     });
   }
 
+  void appLogOut(BuildContext context) async {
+    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
+      return const SignIn();
+    }), (route) => false);
+    await LocalStorage.saveUserLoggedInStatus('false');
+    await LocalStorage.saveUserEmailSF("");
+    await LocalStorage.saveNameSF("");
+    await LocalStorage.saveUserUserIdSF("");
+    await LocalStorage.saveUserNameSF("");
+    await LocalStorage.saveUserAddressSF("");
+    await LocalStorage.saveUserPPSF("");
+    await LocalStorage.saveUserCitySF("");
+    await LocalStorage.saveUserLatSF("");
+    await LocalStorage.saveUserLngSF("");
+    await LocalStorage.saveUserSexSF("");
+    await LocalStorage.saveUserPincodeSF("");
+    await LocalStorage.saveUserPPSF("");
+
+    showToast(msg: "Logout Successfully", clr: Colors.green);
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(""),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Are You Sure?'),
+                        content: const Text('Do you want to logout?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              appLogOut(context);
+                            },
+                            child: const Text('Logout'),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
+                icon: Icon(Icons.logout))
+          ],
           automaticallyImplyLeading: false,
           centerTitle: true,
           backgroundColor: Colors.white,
@@ -162,10 +213,6 @@ class _AccountScreenState extends State<AccountScreen> {
                                 style: const TextStyle(
                                     fontSize: 17, fontWeight: FontWeight.w500),
                               ),
-                              SizedBox(
-                                  height: 25,
-                                  child:
-                                      Image.asset("assets/images/IMG_3346.jpg"))
                             ],
                           ),
                         ),
@@ -180,10 +227,6 @@ class _AccountScreenState extends State<AccountScreen> {
                                 style: TextStyle(
                                     fontSize: 14, fontWeight: FontWeight.w500),
                               ),
-                              SizedBox(
-                                  height: 25,
-                                  child:
-                                      Image.asset("assets/images/IMG_3346.jpg"))
                             ],
                           ),
                         ),

@@ -120,7 +120,7 @@ class _SignUPState extends State<SignUp> {
                                   borderSide:
                                       BorderSide(color: Colors.grey.shade300),
                                 ),
-                                hintText: 'Username',
+                                hintText: 'Name',
                                 hintStyle:
                                     TextStyle(color: Colors.grey.shade400),
                                 prefixIcon: Icon(
