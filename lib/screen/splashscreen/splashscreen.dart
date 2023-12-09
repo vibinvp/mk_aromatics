@@ -6,9 +6,11 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mk_aromatic_limited/common/local_notification_service.dart';
 import 'package:mk_aromatic_limited/common/notification_helper.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/appSetting/appsettingcontroller.dart';
 import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
 import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
 import 'package:mk_aromatic_limited/screen/signin/signin.dart';
+import 'package:provider/provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -34,6 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  late AppsettingController appsettingController;
   AnimationController? animationController;
   Animation<double>? animation;
   startTime() async {
@@ -55,7 +58,12 @@ class _SplashScreenState extends State<SplashScreen> {
     LocalNotificationService.initnotification();
 
     //notofication----------------
+    appsettingController =
+        Provider.of<AppsettingController>(context, listen: false);
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      appsettingController.appSettingdetails(context);
+    });
     startTime();
   }
 
@@ -72,28 +80,7 @@ class _SplashScreenState extends State<SplashScreen> {
               padding: const EdgeInsets.only(right: 30),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return SignIn();
-                      }));
-                    },
-                    child: Container(
-                      height: 33,
-                      width: 65,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: Colors.white),
-                      child: const Center(
-                          child: Text(
-                        "SKIP",
-                        style: TextStyle(color: GlobalVariabels.appColor),
-                      )),
-                    ),
-                  ),
-                ],
+                children: [],
               ),
             ),
             GlobalVariabels.vertical40,

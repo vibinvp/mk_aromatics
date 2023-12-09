@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/constants/color_constant.dart';
+import 'package:mk_aromatic_limited/constants/core/message.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/authentication/forgot%20password/forgotpassword_controller.dart';
 import 'package:mk_aromatic_limited/screen/signin/forgot%20password/verification.dart';
 import 'package:mk_aromatic_limited/screen/signin/signin.dart';
+import 'package:provider/provider.dart';
 
 class NewPasswordField extends StatefulWidget {
   NewPasswordField({super.key});
@@ -13,7 +17,15 @@ class NewPasswordField extends StatefulWidget {
 bool _passwordVisible = false;
 
 class _NewPasswordFieldState extends State<NewPasswordField> {
+  late ForgotPasswordController forgotPasswordController;
   bool _passwordVisible = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    forgotPasswordController =
+        Provider.of<ForgotPasswordController>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +104,8 @@ class _NewPasswordFieldState extends State<NewPasswordField> {
                           ),
                           TextField(
                             obscureText: !_passwordVisible,
-                            //  controller: emailController,
+                            controller:
+                                forgotPasswordController.passwordController,
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -126,7 +139,8 @@ class _NewPasswordFieldState extends State<NewPasswordField> {
                                 )),
                           ),
                           TextField(
-                            //controller: emailController,
+                            controller: forgotPasswordController
+                                .confirmpPasswordController,
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(
@@ -149,22 +163,47 @@ class _NewPasswordFieldState extends State<NewPasswordField> {
                           GlobalVariabels.vertical10,
                           SizedBox(
                             width: ScreenWidth * 0.3,
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                  const Color.fromARGB(255, 255, 95, 39),
-                                )),
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return SignIn();
-                                  }));
-                                },
-                                child: const Text(
-                                  "Save",
-                                  style: TextStyle(color: Colors.white),
-                                )),
+                            child: Consumer(builder:
+                                (context, ForgotPasswordController value, _) {
+                              return value.islodingforgot
+                                  ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                        const Color.fromARGB(255, 255, 95, 39),
+                                      )),
+                                      onPressed: () {
+                                        if (forgotPasswordController
+                                                .passwordController.text
+                                                .trim()
+                                                .isEmpty ||
+                                            forgotPasswordController
+                                                .confirmpPasswordController.text
+                                                .trim()
+                                                .isEmpty) {
+                                          showToast(
+                                              msg: "Enter your fields ",
+                                              clr: AppColoring.errorPopUp);
+                                        } else if (value
+                                                .passwordController.text !=
+                                            value.confirmpPasswordController
+                                                .text) {
+                                          showToast(
+                                              msg:
+                                                  'The Confirm Password field does not match the Password field.',
+                                              clr: AppColoring.errorPopUp);
+                                        } else {
+                                          value.forgotpassword(context);
+                                        }
+                                      },
+                                      child: const Text(
+                                        "Save",
+                                        style: TextStyle(color: Colors.white),
+                                      ));
+                            }),
                           ),
                           GlobalVariabels.vertical15,
                           GlobalVariabels.vertical10,

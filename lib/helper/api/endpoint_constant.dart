@@ -23,4 +23,8 @@ class ApiEndPoint {
   static const String placeorder =
       '${ApiBaseConstant.baseUrlAPI}addWasteRequestForm';
   static const String fcmKey = '${ApiBaseConstant.baseUrlAPI}updateFcmKey';
+  static const String getAppSetting =
+      '${ApiBaseConstant.baseUrlAPI}getAppSetting';
+  static const String forgetpassword =
+      '${ApiBaseConstant.baseUrlAPI}forget_password';
 }

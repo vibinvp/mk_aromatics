@@ -1,11 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/constants/color_constant.dart';
+import 'package:mk_aromatic_limited/constants/core/message.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/authentication/forgot%20password/forgotpassword_controller.dart';
 import 'package:mk_aromatic_limited/screen/signin/forgot%20password/verification.dart';
+import 'package:provider/provider.dart';
 
-class EmailField extends StatelessWidget {
+class EmailField extends StatefulWidget {
   const EmailField({super.key});
 
   @override
+  State<EmailField> createState() => _EmailFieldState();
+}
+
+late ForgotPasswordController forgotPasswordController;
+
+class _EmailFieldState extends State<EmailField> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    forgotPasswordController =
+        Provider.of<ForgotPasswordController>(context, listen: false);
+  }
+
   Widget build(BuildContext context) {
     final ScreemHight = MediaQuery.of(context).size.height;
     final ScreenWidth = MediaQuery.of(context).size.width;
@@ -81,6 +99,8 @@ class EmailField extends StatelessWidget {
                             height: 20,
                           ),
                           TextField(
+                            controller:
+                                forgotPasswordController.emailController,
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
@@ -101,22 +121,34 @@ class EmailField extends StatelessWidget {
                           GlobalVariabels.vertical10,
                           SizedBox(
                             width: ScreenWidth * 0.3,
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                  const Color.fromARGB(255, 255, 95, 39),
-                                )),
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return VerificationField();
-                                  }));
-                                },
-                                child: const Text(
-                                  "Continue",
-                                  style: TextStyle(color: Colors.white),
-                                )),
+                            child: Consumer(builder:
+                                (context, ForgotPasswordController value, _) {
+                              return value.isLoadSndOtp
+                                  ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                        const Color.fromARGB(255, 255, 95, 39),
+                                      )),
+                                      onPressed: () {
+                                        if (!isValidEmail(
+                                            value.emailController.text)) {
+                                          showToast(
+                                            msg: 'Enter a valid email address',
+                                            clr: AppColoring.errorPopUp,
+                                          );
+                                        } else {
+                                          value.forgotpasswordotp(context);
+                                        }
+                                      },
+                                      child: const Text(
+                                        "Continue",
+                                        style: TextStyle(color: Colors.white),
+                                      ));
+                            }),
                           ),
                           GlobalVariabels.vertical15,
                           GlobalVariabels.vertical10,
@@ -172,5 +204,12 @@ class EmailField extends StatelessWidget {
             ],
           )),
     );
+  }
+
+  bool isValidEmail(String email) {
+    // Regular expression for basic email validation
+    String emailRegex = r'^[\w-]+(\.[\w-]+)*@[\w-]+(\.[\w-]+)+$';
+    RegExp regex = RegExp(emailRegex);
+    return regex.hasMatch(email);
   }
 }

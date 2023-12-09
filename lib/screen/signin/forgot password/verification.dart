@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/constants/color_constant.dart';
+import 'package:mk_aromatic_limited/constants/core/message.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/authentication/forgot%20password/forgotpassword_controller.dart';
 import 'package:mk_aromatic_limited/screen/signin/forgot%20password/new_password.dart';
+import 'package:provider/provider.dart';
 
-class VerificationField extends StatelessWidget {
+class VerificationField extends StatefulWidget {
   const VerificationField({super.key});
+
+  @override
+  State<VerificationField> createState() => _VerificationFieldState();
+}
+
+late ForgotPasswordController forgotPasswordController;
+
+class _VerificationFieldState extends State<VerificationField> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    forgotPasswordController =
+        Provider.of<ForgotPasswordController>(context, listen: false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +100,11 @@ class VerificationField extends StatelessWidget {
                             height: 20,
                           ),
                           TextField(
+                            controller: forgotPasswordController.otpController,
+                            keyboardType: TextInputType.number,
+                            maxLength: 6,
                             decoration: InputDecoration(
+                              counterText: "",
                               focusedBorder: const UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.grey),
                               ),
@@ -97,22 +120,37 @@ class VerificationField extends StatelessWidget {
                           GlobalVariabels.vertical10,
                           SizedBox(
                             width: ScreenWidth * 0.3,
-                            child: ElevatedButton(
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                  const Color.fromARGB(255, 255, 95, 39),
-                                )),
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                      MaterialPageRoute(builder: (context) {
-                                    return NewPasswordField();
-                                  }));
-                                },
-                                child: const Text(
-                                  "Verify",
-                                  style: TextStyle(color: Colors.white),
-                                )),
+                            child: Consumer(builder:
+                                (context, ForgotPasswordController value, _) {
+                              return value.isLoadSndOtp
+                                  ? const Center(
+                                      child: CircularProgressIndicator(),
+                                    )
+                                  : ElevatedButton(
+                                      style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                        const Color.fromARGB(255, 255, 95, 39),
+                                      )),
+                                      onPressed: () {
+                                        if (value.otpController.text.length !=
+                                            6) {
+                                          showToast(
+                                              msg: "Enter OTP",
+                                              clr: AppColoring.errorPopUp);
+                                        } else {
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (context) {
+                                            return NewPasswordField();
+                                          }));
+                                        }
+                                      },
+                                      child: const Text(
+                                        "Verify",
+                                        style: TextStyle(color: Colors.white),
+                                      ));
+                            }),
                           ),
                           GlobalVariabels.vertical15,
                           GlobalVariabels.vertical10,

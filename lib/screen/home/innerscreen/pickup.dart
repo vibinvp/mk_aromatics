@@ -26,55 +26,57 @@ class _PickUpScreenState extends State<PickUpScreen> {
       children: [
         Scaffold(
           backgroundColor: Colors.grey.shade300,
-          body: Container(
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/MK-Aromatic-BG.jpg"),
-                fit: BoxFit.cover,
+          body: SafeArea(
+            child: Container(
+              height: double.infinity,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage("assets/images/MK-Aromatic-BG.jpg"),
+                  fit: BoxFit.cover,
+                ),
               ),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            icon: const Icon(Icons.arrow_back)),
-                      ],
-                    ),
-                    const Text(
-                      "Select your waste type",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              icon: const Icon(Icons.arrow_back)),
+                        ],
                       ),
-                    ),
-                    GlobalVariabels.vertical15,
-                    GlobalVariabels.vertical15,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: Container(
-                        width: ScreenWidth * 0.9,
-                        decoration: BoxDecoration(
-                            boxShadow: const [
-                              BoxShadow(
-                                offset: Offset(2, 2),
-                                blurRadius: 12,
-                                color: Color.fromRGBO(0, 0, 0, 0.16),
-                              )
-                            ],
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white),
-                        child: WasteManagementDropdown(),
+                      const Text(
+                        "Select your waste type",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    ),
-                  ],
+                      GlobalVariabels.vertical15,
+                      GlobalVariabels.vertical15,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 30),
+                        child: Container(
+                          width: ScreenWidth * 0.9,
+                          decoration: BoxDecoration(
+                              boxShadow: const [
+                                BoxShadow(
+                                  offset: Offset(2, 2),
+                                  blurRadius: 12,
+                                  color: Color.fromRGBO(0, 0, 0, 0.16),
+                                )
+                              ],
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white),
+                          child: WasteManagementDropdown(),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -107,6 +109,11 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
 
     profileController.wastetypesub = [];
     profileController.selectedCategories = '';
+    profileController.weightcontroller.clear();
+    profileController.image = null;
+    profileController.addressId = '';
+    profileController.addresscontroller.clear();
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       profileController.wastePickUp(context);
     });
@@ -250,9 +257,10 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
                 child: TextFormField(
                   controller: profileController.weightcontroller,
                   keyboardType: TextInputType.number,
+                  textAlign: TextAlign.center,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintText: "   KG",
+                    hintText: "KG",
                     errorText:
                         _validateWeight ? 'Please enter a valid weight' : null,
                   ),
@@ -387,26 +395,85 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
           ],
         ),
         GlobalVariabels.vertical10,
-        GlobalVariabels.vertical10,
-        PrimaryButton(
+        Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: InkWell(
             onTap: () {
-              if (profileController.selectedCategories.trim().isEmpty) {
-                showToast(msg: "Select category", clr: AppColoring.errorPopUp);
-              } else if (profileController.selectedSubCategories.isEmpty) {
-                showToast(
-                    msg: "Select Waste Type", clr: AppColoring.errorPopUp);
-              } else if (profileController.weightcontroller.text
-                  .trim()
-                  .isEmpty) {
-                showToast(msg: "Enter Weight", clr: AppColoring.errorPopUp);
-              } else {
-                Navigator.of(context)
-                    .push(MaterialPageRoute(builder: (context) {
-                  return const AddressScreen();
-                }));
-              }
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return AddressScreen();
+              }));
             },
-            label: "Submit"),
+            child: TextFormField(
+              enabled: false,
+              controller: profileController.addresscontroller,
+              decoration: InputDecoration(
+                suffixIcon: TextButton.icon(
+                    label: Text('Select'),
+                    onPressed: () {
+                      print('Select');
+                    },
+                    icon: Icon(Icons.my_location)),
+                border: OutlineInputBorder(),
+                hintText: "Select Address",
+                errorText:
+                    _validateWeight ? 'Please enter a valid weight' : null,
+              ),
+            ),
+          ),
+        ),
+        GlobalVariabels.vertical10,
+        Consumer(builder: (context, ProfileController data, _) {
+          return data.isLoadPlaceOrder
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : PrimaryButton(
+                  onTap: () {
+                    if (data.selectedCategories.trim().isEmpty) {
+                      showToast(
+                          msg: "Select category", clr: AppColoring.errorPopUp);
+                    } else if (data.selectedSubCategories.isEmpty) {
+                      showToast(
+                          msg: "Select Waste Type",
+                          clr: AppColoring.errorPopUp);
+                    } else if (data.weightcontroller.text.trim().isEmpty) {
+                      showToast(
+                          msg: "Enter Weight", clr: AppColoring.errorPopUp);
+                    } else if (data.addresscontroller.text.trim().isEmpty) {
+                      showToast(
+                          msg: "Select address", clr: AppColoring.errorPopUp);
+                    } else if (data.image == null) {
+                      showToast(
+                          msg: "Select Image", clr: AppColoring.errorPopUp);
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: const Text('Are You Sure?'),
+                            content: const Text('Do you want to place order?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                  data.placeOrder(context, data.addressId);
+                                },
+                                child: const Text('Yes'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }
+                  },
+                  label: "Submit");
+        }),
         GlobalVariabels.vertical15
       ],
     );

@@ -89,7 +89,7 @@ class _SignUPState extends State<SignUp> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: Container(
-                    height: ScreemHight * 0.44,
+                    // height: ScreemHight * 0.44,
                     width: ScreenWidth * 0.3,
                     decoration: BoxDecoration(
                         boxShadow: const [
@@ -112,9 +112,7 @@ class _SignUPState extends State<SignUp> {
                             controller: registrationProvider.usernameController,
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(
-                                  borderSide: BorderSide(
-                                      color:
-                                          Colors.grey), // Change the color here
+                                  borderSide: BorderSide(color: Colors.grey),
                                 ),
                                 enabledBorder: UnderlineInputBorder(
                                   borderSide:
@@ -129,8 +127,11 @@ class _SignUPState extends State<SignUp> {
                                 )),
                           ),
                           TextField(
+                            keyboardType: TextInputType.phone,
+                            maxLength: 10,
                             controller: registrationProvider.mobileController,
                             decoration: InputDecoration(
+                                counterText: '',
                                 focusedBorder: const UnderlineInputBorder(
                                   borderSide: BorderSide(color: Colors.grey),
                                 ),
@@ -147,6 +148,7 @@ class _SignUPState extends State<SignUp> {
                                 )),
                           ),
                           TextField(
+                            keyboardType: TextInputType.emailAddress,
                             controller: registrationProvider.emailController,
                             decoration: InputDecoration(
                                 focusedBorder: const UnderlineInputBorder(
@@ -200,6 +202,7 @@ class _SignUPState extends State<SignUp> {
                                 )),
                           ),
                           TextField(
+                            obscureText: true,
                             controller:
                                 registrationProvider.confirmpasswordController,
                             decoration: InputDecoration(
@@ -238,10 +241,13 @@ class _SignUPState extends State<SignUp> {
                                         value.usernameController.text == '' ||
                                         value.usernameController.text.isEmpty ||
                                         value.passwordController.text == '' ||
-                                        value.passwordController.text.isEmpty ||
+                                        value.passwordController.text
+                                            .trim()
+                                            .isEmpty ||
                                         value.confirmpasswordController.text ==
                                             '' ||
                                         value.confirmpasswordController.text
+                                            .trim()
                                             .isEmpty) {
                                       showToast(
                                           msg: 'Enter the all fields correctly',

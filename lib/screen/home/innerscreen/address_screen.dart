@@ -9,7 +9,9 @@ import 'package:mk_aromatic_limited/screen/home/innerscreen/editaddress.dart';
 import 'package:provider/provider.dart';
 
 class AddressScreen extends StatefulWidget {
-  const AddressScreen({super.key});
+  const AddressScreen({
+    super.key,
+  });
 
   @override
   State<AddressScreen> createState() => _AddressScreenState();
@@ -34,6 +36,21 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: CircleAvatar(
+        radius: 25,
+        backgroundColor: GlobalVariabels.appColor,
+        child: IconButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+                return const AddAddressScreen();
+              }));
+            },
+            icon: const Icon(
+              Icons.add,
+              size: 35,
+              color: Colors.white,
+            )),
+      ),
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
@@ -45,37 +62,38 @@ class _AddressScreenState extends State<AddressScreen> {
           "My Address",
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
+        actions: [],
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-              child: Row(
-                children: [
-                  CircleAvatar(
-                    backgroundColor: GlobalVariabels.appColor,
-                    child: IconButton(
-                        onPressed: () {
-                          Navigator.of(context)
-                              .push(MaterialPageRoute(builder: (context) {
-                            return const AddAddressScreen();
-                          }));
-                        },
-                        icon: const Icon(
-                          Icons.add,
-                          color: Colors.white,
-                        )),
-                  ),
-                  GlobalVariabels.horizontal10,
-                  const Text(
-                    "Add Address",
-                    style: TextStyle(fontSize: 16),
-                  )
-                ],
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+            //   child: Row(
+            //     children: [
+            //       CircleAvatar(
+            //         backgroundColor: GlobalVariabels.appColor,
+            //         child: IconButton(
+            //             onPressed: () {
+            //               Navigator.of(context)
+            //                   .push(MaterialPageRoute(builder: (context) {
+            //                 return const AddAddressScreen();
+            //               }));
+            //             },
+            //             icon: const Icon(
+            //               Icons.add,
+            //               color: Colors.white,
+            //             )),
+            //       ),
+            //       GlobalVariabels.horizontal10,
+            //       const Text(
+            //         "Add Address",
+            //         style: TextStyle(fontSize: 16),
+            //       )
+            //     ],
+            //   ),
+            // ),
             Expanded(
               child: Consumer<GetAddressController>(
                   builder: (context, GetAddressController value, _) {
@@ -262,11 +280,14 @@ class _AddressScreenState extends State<AddressScreen> {
                                               ProfileController data, _) {
                                             return ElevatedButton(
                                                 onPressed: () {
-                                                  data.placeOrder(
-                                                      context,
+                                                  data.setSelectAdrres(
+                                                      value.addressList[index]
+                                                              .address ??
+                                                          '',
                                                       value.addressList[index]
                                                               .id ??
-                                                          '');
+                                                          "");
+                                                  Navigator.pop(context);
                                                 },
                                                 child: Text("Next"));
                                           })

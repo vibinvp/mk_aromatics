@@ -34,6 +34,7 @@ class AppColoring {
   static const Color textPrimary = Color(0xff84c441);
 
   //popUpcolors
+
   static const Color successPopup = Colors.green;
   static const Color yellow = Colors.yellow;
   static const Color errorPopUp = Colors.red;

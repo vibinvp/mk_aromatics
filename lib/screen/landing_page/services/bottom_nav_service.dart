@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 class BottomNavigationModel extends ChangeNotifier {
-  int _currentIndex = 0;
-
-  int get currentIndex => _currentIndex;
+  int currentIndex = 0;
 
   void updateIndex(int newIndex) {
-    _currentIndex = newIndex;
+    currentIndex = newIndex;
     notifyListeners();
   }
 }

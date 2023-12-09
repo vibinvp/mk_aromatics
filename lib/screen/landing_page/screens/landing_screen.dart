@@ -23,6 +23,7 @@ class _LandingScreen extends State<LandingScreen> {
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<LoginProvider>().updateFcmToken('', context);
+      context.read<BottomNavigationModel>().currentIndex = 0;
     });
     super.initState();
   }

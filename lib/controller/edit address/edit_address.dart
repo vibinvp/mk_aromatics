@@ -6,6 +6,7 @@ import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
 import 'package:mk_aromatic_limited/screen/home/innerscreen/address_screen.dart';
 
 import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
+import 'package:provider/provider.dart';
 
 class EditAddressController with ChangeNotifier {
   bool _isLoading = false;
@@ -41,9 +42,7 @@ class EditAddressController with ChangeNotifier {
         notifyListeners();
 
         if (response != null) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return AddressScreen();
-          }));
+          Navigator.pop(context);
 
           notifyListeners();
         } else {

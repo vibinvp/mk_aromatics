@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/constants/core/app_constant.dart';
 import 'package:mk_aromatic_limited/constants/global_variables.dart';
+import 'package:mk_aromatic_limited/controller/appSetting/appsettingcontroller.dart';
 import 'package:mk_aromatic_limited/controller/authentication/registration/registration.dart';
-import 'package:mk_aromatic_limited/screen/common%20screen/choosescreen6.dart';
+import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:provider/provider.dart';
 
 class ChooseScreen5 extends StatefulWidget {
@@ -13,6 +15,7 @@ class ChooseScreen5 extends StatefulWidget {
 
 class _ChooseScreen5 extends State<ChooseScreen5> {
   late RegistrationProvider registrationProvider;
+  late AppsettingController appsettingController;
 
   @override
   void initState() {
@@ -20,6 +23,8 @@ class _ChooseScreen5 extends State<ChooseScreen5> {
     super.initState();
     registrationProvider =
         Provider.of<RegistrationProvider>(context, listen: false);
+    appsettingController =
+        Provider.of<AppsettingController>(context, listen: false);
     registrationProvider.getCurrentLocation();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       registrationProvider.getSubcategoryList(context);
@@ -65,7 +70,7 @@ class _ChooseScreen5 extends State<ChooseScreen5> {
             right: 40,
             top: 230,
             child: Container(
-              height: ScreemHight * 0.4,
+              //height: ScreemHight * 0.4,
               width: ScreenWidth * 0.3,
               decoration: BoxDecoration(
                 boxShadow: const [
@@ -92,22 +97,54 @@ class _ChooseScreen5 extends State<ChooseScreen5> {
                       ),
                       Text(
                         registrationProvider.usernameController.text,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       Text(
                         registrationProvider.emailController.text,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 12,
                         ),
                       ),
                       GlobalVariabels.vertical15,
-                      const Text(
-                        "In the above image Container 1 is not wrapped inside a Positioned widget, whereas Container 2 and 3 are, so when stackFit.expand is used Container 1 expands to the width and the height of the parent.",
-                        style: TextStyle(
-                          fontSize: 12,
-                        ),
-                      ),
+                      Consumer(
+                          builder: (context, AppsettingController value, _) {
+                        return value.appsetting.isEmpty
+                            ? const Text(
+                                'Welcome to ${AppConstant.appName}',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                ),
+                              )
+                            : HtmlWidget(
+                                // value.appsetting[0].welMessage
+                                //             .toString()
+                                //             .length >
+                                //         100
+                                //     ? value.appsetting[0].welMessage
+                                //         .toString()
+                                //         .substring(0, 200)
+                                //     :
+                                value.appsetting[0].welMessage ?? '',
+                                onErrorBuilder: (context, element, error) =>
+                                    Text('$element error: $error'),
+                                onLoadingBuilder:
+                                    (context, element, loadingProgress) =>
+                                        const SizedBox(
+                                  height: 600,
+                                  child: CircularProgressIndicator(),
+                                ),
+
+                                onTapUrl: (url) {
+                                  return true;
+                                },
+
+                                renderMode: RenderMode.column,
+
+                                // set the default styling for text
+                                textStyle: const TextStyle(fontSize: 14),
+                              );
+                      }),
                       GlobalVariabels.vertical15,
                       Consumer<RegistrationProvider>(
                           builder: (context, value, _) {

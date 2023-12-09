@@ -20,6 +20,9 @@ import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.d
 
 class ProfileController with ChangeNotifier {
   TextEditingController weightcontroller = TextEditingController();
+  TextEditingController addresscontroller = TextEditingController();
+  String addressId = '';
+  String profilePic = "";
   File? image;
   Future<void> getImage(ImageSource source) async {
     final pikImage = await ImagePicker().pickImage(
@@ -34,6 +37,12 @@ class ProfileController with ChangeNotifier {
       notifyListeners();
       log("image picked  $image ");
     }
+  }
+
+  void setSelectAdrres(String address, String id) {
+    addresscontroller.text = address;
+    addressId = id;
+    notifyListeners();
   }
 
   List<PickupCategoryList> wastetype = [];
@@ -161,8 +170,11 @@ class ProfileController with ChangeNotifier {
       //final username = await LocalStorage.getUserNameFromSF();
       final headers = ApiHeader.header;
       String selectedsub = '';
+
       for (var i = 0; i < selectedSubCategories.length; i++) {
-        selectedsub = '$selectedsub,${selectedSubCategories[i]}';
+        selectedsub = i == 0
+            ? '$selectedsub${selectedSubCategories[i]}'
+            : '$selectedsub,${selectedSubCategories[i]}';
       }
       print(selectedsub);
 
@@ -189,14 +201,8 @@ class ProfileController with ChangeNotifier {
         options: Options(headers: headers),
         queryParameters: {
           'Content-type': 'application/json',
-          //   'Authorization':
-          //       'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.IjIwMjMtMDgtMjggMTI6MjU6MjI4MDg2Njg5MTg0Ig.P2hiVug5fkkQhGo9wGCnAi-gni7wsidrGPysMI83QPw',
         },
       ).then((value) async {
-        //     });
-
-        // await ApiBaseHelper.postAPICall(ApiEndPoint.updateProfile, paremeters)
-        //     .then((value) async {
         order = PlaceOrder.fromJson(value.data);
 
         if (order != null) {
@@ -216,7 +222,7 @@ class ProfileController with ChangeNotifier {
         }
       });
     } catch (e) {
-      log(e.toString());
+      print(e.toString());
       isLoadPlaceOrder = false;
       notifyListeners();
       DioExceptionhandler.errorHandler(e);

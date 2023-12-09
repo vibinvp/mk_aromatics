@@ -73,7 +73,7 @@ class LoginProvider with ChangeNotifier {
             await LocalStorage.saveNameSF(getmodel.fullname.toString());
 
             //await LocalStorage.saveUserLastNameSF(getmodel.lastname.toString());
-            // await LocalStorage.saveUserPPSF(getmodel.profileAvatar.toString());
+            await LocalStorage.saveUserPPSF(getmodel.pp.toString());
             await LocalStorage.saveUserMobileSF(getmodel.mobile.toString());
             await LocalStorage.saveUserPasswordSF(
                 passwordController.text.toString());
