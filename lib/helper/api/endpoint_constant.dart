@@ -27,4 +27,6 @@ class ApiEndPoint {
       '${ApiBaseConstant.baseUrlAPI}getAppSetting';
   static const String forgetpassword =
       '${ApiBaseConstant.baseUrlAPI}forget_password';
+  static const String getNotification =
+      '${ApiBaseConstant.baseUrlAPI}getNotification';
 }

@@ -50,7 +50,7 @@ class _PickUpScreenState extends State<PickUpScreen> {
                         ],
                       ),
                       const Text(
-                        "Select your waste type",
+                        "Select Your Waste Type",
                         style: TextStyle(
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
@@ -154,33 +154,35 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
                       height: 80,
                       child: SingleBallnerItemSimmer(),
                     )
-                  : DropdownButtonFormField(
-                      decoration: const InputDecoration(
-                          hintText: "Select Category  ",
-                          border: InputBorder.none),
-                      onChanged: (String? newValue) {
-                        for (var element in data.wastetype) {
-                          if (element.id == newValue) {
-                            data.setCategory(element.wasteName ?? '');
-                          }
-                        }
-                        data.wastePickUpsub(context, newValue ?? '');
-                      },
-                      // validator: (value) {
-                      //   if (value == null || value.isEmpty) {
-                      //     return 'Please select a waste type';
-                      //   }
-                      //   return null;
-                      // },
-                      items: data.pickUpcategory!.data!
-                          .map<DropdownMenuItem<String>>(
-                              (PickupCategoryList value) {
-                        return DropdownMenuItem<String>(
-                          value: value.id,
-                          child: Text(value.wasteName ?? ''),
-                        );
-                      }).toList(),
-                    );
+                  : data.pickUpcategory != null
+                      ? DropdownButtonFormField(
+                          decoration: const InputDecoration(
+                              hintText: "Select Category  ",
+                              border: InputBorder.none),
+                          onChanged: (String? newValue) {
+                            for (var element in data.wastetype) {
+                              if (element.id == newValue) {
+                                data.setCategory(element.wasteName ?? '');
+                              }
+                            }
+                            data.wastePickUpsub(context, newValue ?? '');
+                          },
+                          // validator: (value) {
+                          //   if (value == null || value.isEmpty) {
+                          //     return 'Please select a waste type';
+                          //   }
+                          //   return null;
+                          // },
+                          items: data.pickUpcategory!.data!
+                              .map<DropdownMenuItem<String>>(
+                                  (PickupCategoryList value) {
+                            return DropdownMenuItem<String>(
+                              value: value.id,
+                              child: Text(value.wasteName ?? ''),
+                            );
+                          }).toList(),
+                        )
+                      : SizedBox();
             }),
           ),
         ),
@@ -345,7 +347,7 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
                       },
                       icon: const Icon(
                         Icons.add_a_photo_outlined,
-                        size: 45,
+                        size: 25,
                       )),
                 ),
                 GlobalVariabels.vertical5,
@@ -384,7 +386,7 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
                         },
                         icon: const Icon(
                           Icons.calendar_month,
-                          size: 45,
+                          size: 25,
                         )),
                   ),
                   GlobalVariabels.vertical5,
@@ -394,7 +396,6 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
             }),
           ],
         ),
-        GlobalVariabels.vertical10,
         Padding(
           padding: const EdgeInsets.all(18.0),
           child: InkWell(
@@ -448,10 +449,11 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
                     } else {
                       showDialog(
                         context: context,
-                        builder: (BuildContext context) {
+                        builder: (BuildContext ctx) {
                           return AlertDialog(
                             title: const Text('Are You Sure?'),
-                            content: const Text('Do you want to place order?'),
+                            content:
+                                const Text('Do you want to place request?'),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -461,7 +463,7 @@ class _WasteManagementDropdownState extends State<WasteManagementDropdown> {
                               ),
                               TextButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  Navigator.of(context).pop();
                                   data.placeOrder(context, data.addressId);
                                 },
                                 child: const Text('Yes'),

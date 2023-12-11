@@ -16,6 +16,7 @@ import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
 import 'package:mk_aromatic_limited/model/pickup%20category/pickup_category.dart';
 import 'package:mk_aromatic_limited/model/pickup%20sub%20category/pickup_sub_category.dart';
 import 'package:mk_aromatic_limited/model/place%20order/place_order.dart';
+import 'package:mk_aromatic_limited/screen/home/innerscreen/bookingconfirmed.dart';
 import 'package:mk_aromatic_limited/screen/landing_page/screens/landing_screen.dart';
 
 class ProfileController with ChangeNotifier {
@@ -212,10 +213,11 @@ class ProfileController with ChangeNotifier {
             isLoadPlaceOrder = false;
             notifyListeners();
             Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-              return LandingScreen();
+              return const BookingConfirmed();
             }));
           } else {
             showToast(msg: order!.message ?? '', clr: AppColoring.errorPopUp);
+
             isLoadPlaceOrder = false;
             notifyListeners();
           }

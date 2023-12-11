@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/common/routes.dart';
 import 'package:mk_aromatic_limited/common/shimmer_effect.dart';
 import 'package:mk_aromatic_limited/constants/core/app_constant.dart';
 import 'package:mk_aromatic_limited/constants/core/message.dart';
@@ -9,6 +10,7 @@ import 'package:mk_aromatic_limited/controller/edit%20profile/edit_profile.dart'
 import 'package:mk_aromatic_limited/helper/api/base_constatnt.dart';
 import 'package:mk_aromatic_limited/helper/storage/localstorage.dart';
 import 'package:mk_aromatic_limited/screen/account/innerscreen/editprofile.dart';
+import 'package:mk_aromatic_limited/screen/account/innerscreen/setings_screen.dart';
 import 'package:mk_aromatic_limited/screen/signin/signin.dart';
 import 'package:provider/provider.dart';
 
@@ -99,31 +101,9 @@ class _AccountScreenState extends State<AccountScreen> {
           actions: [
             IconButton(
                 onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Are You Sure?'),
-                        content: const Text('Do you want to logout?'),
-                        actions: [
-                          TextButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Cancel'),
-                          ),
-                          TextButton(
-                            onPressed: () {
-                              appLogOut(context);
-                            },
-                            child: const Text('Logout'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                  RouteConstat.nextNamed(context, ScreenSettings());
                 },
-                icon: Icon(Icons.logout))
+                icon: Icon(Icons.settings))
           ],
           automaticallyImplyLeading: false,
           centerTitle: true,

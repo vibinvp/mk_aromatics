@@ -111,6 +111,7 @@ class _EditAddressScreenState extends State<EditAddressScreen> {
               SizedBox(
                 height: 50,
                 child: TextField(
+                  maxLength: 10,
                   controller: editAddressController.mobileController,
                   decoration: InputDecoration(
                       hintText: "Phone Number",

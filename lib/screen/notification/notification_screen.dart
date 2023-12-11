@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mk_aromatic_limited/common/shimmer_effect.dart';
+import 'package:mk_aromatic_limited/controller/notification/notificatoncoontroller.dart';
+import 'package:provider/provider.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});
@@ -8,6 +11,18 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
+  late NotificationController notificationController;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    notificationController =
+        Provider.of<NotificationController>(context, listen: false);
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      notificationController.getnotification(context);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -31,33 +46,39 @@ class _NotificationScreenState extends State<NotificationScreen> {
               padding: const EdgeInsets.symmetric(
                 horizontal: 15,
               ),
-              child: ListView.builder(
-                  itemBuilder: (BuildContext context, index) {
-                    return Container(
-                      margin: const EdgeInsets.all(5),
-                      height: 80,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Colors.grey,
-                              blurRadius: 3.0,
-                              offset: Offset(2, 2),
-                            ),
-                          ],
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: const Padding(
-                        padding: EdgeInsets.all(8.0),
-                        child: Text(
-                          "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum has been the industry's standard dummy text ever since the 1500s when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the",
-                          maxLines: 3,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    );
-                  },
-                  itemCount: 10),
+              child:
+                  Consumer(builder: (context, NotificationController value, _) {
+                return ListView.builder(
+                    itemBuilder: (BuildContext context, index) {
+                      return value.isLoading
+                          ? const Center(
+                              child: ShimmerEffect(),
+                            )
+                          : value.notifications.isEmpty
+                              ? const Center(
+                                  child: Text("No Notifcations"),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 5),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    child: ListTile(
+                                      title: Text(
+                                          value.notifications[index].title ??
+                                              ""),
+                                      subtitle: Text(
+                                          value.notifications[index].message ??
+                                              ""),
+                                    ),
+                                  ),
+                                );
+                    },
+                    itemCount: value.notifications.length);
+              }),
             ),
           ),
         ),

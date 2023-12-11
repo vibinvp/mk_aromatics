@@ -12,9 +12,11 @@ import 'package:mk_aromatic_limited/controller/edit%20profile/edit_profile.dart'
 import 'package:mk_aromatic_limited/controller/authentication/login/login.dart';
 import 'package:mk_aromatic_limited/controller/getAddress/get_address_controller.dart';
 import 'package:mk_aromatic_limited/controller/history/history.dart';
+import 'package:mk_aromatic_limited/controller/notification/notificatoncoontroller.dart';
 import 'package:mk_aromatic_limited/controller/remove%20address/remove_address.dart';
 import 'package:mk_aromatic_limited/controller/waste%20pickup/pickup.dart';
 import 'package:mk_aromatic_limited/screen/home/innerscreen/address_screen.dart';
+import 'package:mk_aromatic_limited/screen/home/innerscreen/bookingconfirmed.dart';
 
 import 'package:mk_aromatic_limited/screen/landing_page/services/bottom_nav_service.dart';
 import 'package:mk_aromatic_limited/screen/signin/forgot%20password/email_field.dart';
@@ -77,6 +79,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProfileController()),
         ChangeNotifierProvider(create: (_) => AppsettingController()),
         ChangeNotifierProvider(create: (_) => ForgotPasswordController()),
+        ChangeNotifierProvider(create: (_) => NotificationController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

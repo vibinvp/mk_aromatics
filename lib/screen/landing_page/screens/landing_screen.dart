@@ -21,9 +21,9 @@ class _LandingScreen extends State<LandingScreen> {
   int selectedButtonIndex = -1; // Maintain the selected button index
   @override
   void initState() {
+    context.read<BottomNavigationModel>().currentIndex = 0;
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       context.read<LoginProvider>().updateFcmToken('', context);
-      context.read<BottomNavigationModel>().currentIndex = 0;
     });
     super.initState();
   }
